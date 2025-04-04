@@ -1,0 +1,8 @@
+{
+  "name": "Hackathon App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "22bcb811"
+}
