@@ -18,7 +18,6 @@ export interface Restaurant{
 
 }
 
-
 const RestaurantMenu: React.FC = () => {
   const { restaurantId } = useParams<{ restaurantId: string }>();
   const { addToCart } = useCart();

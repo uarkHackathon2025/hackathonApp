@@ -1,6 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
+  IonFabButton,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
@@ -10,7 +11,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, navigateOutline, settingsOutline } from 'ionicons/icons';
+import { cartSharp, homeOutline, navigateOutline, settingsOutline } from 'ionicons/icons';
 import Tab1 from './pages/Tab1'; //settings
 import Tab2 from './pages/Tab2'; //home
 import Tab3 from './pages/Tab3'; //navigation
@@ -63,6 +64,7 @@ import RestaurantMenu from './pages/RestaurantMenu';
 
 // Import the new OrderDetails page
 import OrderDetails from './pages/OrderDetails';
+import CartPage from './pages/CartPage';
 
 setupIonicReact();
 
@@ -116,6 +118,8 @@ const App: React.FC = () => (
                 </Route>
                 {/* <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} /> */}
                 <Route path="/tabs/tab2/restaurant/:restaurantId" component={RestaurantMenu} exact />
+                <Route path="/cart" component={CartPage} exact />
+
 
               </IonRouterOutlet>
 
