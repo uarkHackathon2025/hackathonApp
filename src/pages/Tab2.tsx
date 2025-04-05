@@ -25,14 +25,28 @@ import React, { useState, useEffect } from 'react';
 import './Tab2.css';
 
 const HomePage: React.FC = () => {
-  const [items, setItems] = useState<string[]>([]);
+  const [items, setItems] = useState<{ id: number; name: string }[]>([]);
 
   const generateItems = () => {
     const newItems = [];
-    for (let i = 0; i < 50; i++) {
-      newItems.push(`Item ${1 + items.length + i}`);
+    for (let i = 0; i < 20; i++) {
+      newItems.push({
+        id: items.length + i + 1,
+        name: generateRandomName()
+      });
     }
     setItems([...items, ...newItems]);
+  };
+  
+
+  const generateRandomName = () => {
+    const adjectives = ['Spicy', 'Savory', 'Crispy', 'Tangy', 'Sweet', 'Juicy', 'Grilled', 'Roasted','Zesty','Meaty','Big','Yummy','Fat','Succulent','Super'];
+    const dishes = ['Taco', 'Burger', 'Noodle Bowl', 'Rice Plate', 'Wrap', 'Pizza', 'Sandwich', 'Curry','Fried Chicken','Fish and Chips','Adrian','Josh','Santosh','Felix','Matthew'];
+  
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const dish = dishes[Math.floor(Math.random() * dishes.length)];
+  
+    return `${adjective} ${dish}`;
   };
 
   useEffect(() => {
@@ -57,17 +71,24 @@ const HomePage: React.FC = () => {
         <ExploreContainer name="Home page" />
         <IonList>
 
-        {items.map((item, index) => (
-          <IonItem key={item}>
-            <IonAvatar slot="start">
-              <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
-            </IonAvatar>
-            <IonLabel>{item}</IonLabel>
-          </IonItem>
-        ))}
-      </IonList>
+        <IonList>
+          {items.map((item) => (
+            <IonItem
+              key={item.id}
+              routerLink={`/tabs/item/${encodeURIComponent(item.name)}`}
+              button
+            >
+              <IonAvatar slot="start">
+                <img src={`https://picsum.photos/80/80?random=${item.id}`} alt="avatar" />
+              </IonAvatar>
+              <IonLabel>{item.name}</IonLabel>
+            </IonItem>
+          ))}
+        </IonList>
 
-      /* Scroll*/
+        </IonList>
+
+      {/* Scroll */}
         <IonInfiniteScroll
         onIonInfinite={(event) => {
               generateItems();
@@ -76,7 +97,7 @@ const HomePage: React.FC = () => {
           <IonInfiniteScrollContent></IonInfiniteScrollContent>
         </IonInfiniteScroll>
 
-        /* Shopping Cart Button*/
+        {/* Shopping Cart Button */}
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton>
             <IonIcon icon={cartSharp}></IonIcon>
