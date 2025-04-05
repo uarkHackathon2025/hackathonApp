@@ -1,6 +1,9 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { usePhotoGallery } from '../hooks/usePhotoGallery';
+import CameraGallery from '../components/CameraGallery';
+
 
 interface Order {
     id: string;
@@ -13,6 +16,8 @@ interface Order {
 const OrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [order, setOrder] = useState<Order | null>(null);
+    const { photos, takePhoto } = usePhotoGallery();
+    
 
     useEffect(() => {
         // 🔌 Replace with actual Firestore query based on `id`
@@ -38,6 +43,7 @@ const OrderDetails: React.FC = () => {
     const handleConfirmDelivery = () => {
         if (order) {
             setOrder({ ...order, confirmed: true });
+            takePhoto();
             // TODO: 🔥 Update Firebase order confirmation status here
         }
     };
