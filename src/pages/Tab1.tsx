@@ -1,12 +1,16 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
+import { db } from './firebase'; // Assuming Firebase is set up
+import { doc, getDoc } from 'firebase/firestore';
 
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
+  const [orderLocation, setOrderLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [showImage, setShowImage] = useState(false); // State to control image visibility
+  const [photoURL, setPhotoURL] = useState<string | null>(null);
 
   const openImage = () => {
     setShowImage(true); // Show the image when the button is clicked
@@ -15,6 +19,24 @@ const Tab1: React.FC = () => {
   const closeImage = () => {
     setShowImage(false); // Close the image when clicked
   };
+
+  useEffect(() => {
+    // Fetch order details from Firebase (you can replace 'orderId' with the actual order ID you want to fetch)
+    const fetchOrderDetails = async () => {
+      const orderDocRef = doc(db, "orders", "orderId"); // Replace with your order ID
+      const orderDoc = await getDoc(orderDocRef);
+      if (orderDoc.exists()) {
+        const orderData = orderDoc.data();
+        if (orderData?.location) {
+          setOrderLocation(orderData.location);
+        }
+        if (orderData?.photoURL) {
+          setPhotoURL(orderData.photoURL); // Store the photo URL for later use
+        }
+      }
+    };
+    fetchOrderDetails();
+  }, []); // Empty dependency array to only fetch on mount
 
   return (
     <IonPage>
@@ -47,12 +69,12 @@ const Tab1: React.FC = () => {
           </div>
 
           {/* Main content */}
-          {(appState === 'normal' || appState === 'pending') && <Map />}
+          {(appState === 'normal' || appState === 'pending') && orderLocation && <Map orderLocation={orderLocation} />}
           {appState === 'pending' && <PendingScreen />}
           {appState === 'waiting' && <WaitingScreen />}
 
           {/* Image Popup */}
-          {showImage && (
+          {showImage && photoURL && (
             <div style={{
               position: 'fixed',
               top: 0,
@@ -65,8 +87,8 @@ const Tab1: React.FC = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }} onClick={closeImage}>
-              <img   //below is where you need to paste the image from delivery driver
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbiEJuEpcm7Oa6cP3WyuuF4W_yVJtzybDu2w&s" // Replace this with your image source
+              <img
+                src={photoURL} // Displaying the photo from Firebase
                 alt="Popup"
                 style={{
                   maxWidth: '90%',
