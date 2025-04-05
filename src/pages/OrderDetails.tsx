@@ -58,10 +58,10 @@ const OrderDetails: React.FC = () => {
         //     },
         // ];
 
-    const handleConfirmDelivery = async () => {
+    const handleConfirmDelivery = () => {
         if (order) {
             // Take a photo and store it in a variable
-            const newPhoto = await takePhoto();
+            const newPhoto = takePhoto();
     
             // Get the current geolocation
             navigator.geolocation.getCurrentPosition(
