@@ -282,7 +282,6 @@ const Tab1: React.FC = () => {
         {/* Order information */}
         {orderId && (
           <div style={{
-            backgroundColor: '#f4f4f4',
             padding: '10px',
             borderRadius: '8px',
             marginBottom: '10px'
@@ -304,7 +303,7 @@ const Tab1: React.FC = () => {
               marginTop: '5px',
               padding: '5px',
               backgroundColor: 
-                appState === 'normal' ? '#d4edff' : 
+                appState === 'normal' ? '#28bb50' : 
                 appState === 'pending' ? '#fff3cd' : '#d4f4e6',
               borderRadius: '4px',
               display: 'inline-block'
@@ -406,7 +405,8 @@ const Tab1: React.FC = () => {
               textAlign: 'center',
               maxWidth: '90%'
             }}>
-              Order location: {orderLocation?.latitude.toFixed(6)}, {orderLocation?.longitude.toFixed(6)}
+              {/* Show Coordinates */}
+              {/* Order location: {orderLocation?.latitude.toFixed(6)}, {orderLocation?.longitude.toFixed(6)} */}
             </div>
           </div>
         )}
