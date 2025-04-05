@@ -58,6 +58,8 @@ import './theme/variables.css';
 //Map
 import Map from './components/Map';
 import CameraPage from './pages/CameraPage'; // Import CameraPage
+import { CartProvider } from './components/CartContent';
+import RestaurantMenu from './pages/RestaurantMenu';
 
 // Import the new OrderDetails page
 import OrderDetails from './pages/OrderDetails';
@@ -65,70 +67,81 @@ import OrderDetails from './pages/OrderDetails';
 setupIonicReact();
 
 const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        {/* Default route now redirects to /tabs/tab2 */}
-        <Route exact path="/">
-          <Redirect to="/tabs/tab2" />
-        </Route>
+  <CartProvider>
+    <IonApp>
+      
+      <IonReactRouter>
+        
+        <IonRouterOutlet>
+          {/*<Route path="/camera" component={CameraPage} />}*/}
 
-        <Route path="/tabs">
-          <IonTabs>
-            <IonRouterOutlet>
-              <Route exact path="/tabs/tab1">
-                <Tab1 />
-              </Route>
-              <Route exact path="/tabs/tab2">
-                <Tab2 />
-              </Route>
-              <Route path="/tabs/tab3">
-                <Tab3 />
-              </Route>
-              {/* Settings Sub-Pages from Tab3 */}
-              <Route exact path="/tabs/AccountInfo">
-                <AccountInfo />
-              </Route>
-              <Route exact path="/tabs/Notifications">
-                <Notifications />
-              </Route>
-              <Route exact path="/tabs/Payment">
-                <Payment />
-              </Route>
-              <Route exact path="/tabs/History">
-                <History />
-              </Route>
-              <Route exact path="/tabs/Driver">
-                <Driver />
-              </Route>
-              <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} />
-            </IonRouterOutlet>
+          {/* Default route now redirects to /camera 
+          <Route exact path="/">
+            <Redirect to="/camera" />
+          </Route>
+          */}
 
-            {/* Conditionally render the IonTabBar */}
-            {window.location.pathname !== '/tabs/Driver' && (
-              <IonTabBar slot="bottom">
-                <IonTabButton tab="tab1" href="/tabs/tab1">
-                  <IonIcon aria-hidden="true" icon={navigateOutline} />
-                  <IonLabel>Navigation</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab2" href="/tabs/tab2">
-                  <IonIcon aria-hidden="true" icon={homeOutline} />
-                  <IonLabel>Home</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/tabs/tab3">
-                  <IonIcon aria-hidden="true" icon={settingsOutline} />
-                  <IonLabel>Settings</IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-            )}
-          </IonTabs>
-        </Route>
+          <Route exact path="/">
+            <Redirect to="/tabs/tab2" />
+          </Route>
 
-        {/* ✅ NEW ORDER DETAILS ROUTE */}
-        <Route exact path="/order/:id" component={OrderDetails} />
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+          {/* Tabs wrapped inside their own route */}
+          <Route path="/tabs">
+            <IonTabs>
+              <IonRouterOutlet>
+                <Route exact path="/tabs/tab1">
+                  <Tab1 />
+                </Route>
+                <Route exact path="/tabs/tab2">
+                  <Tab2 />
+                </Route>
+                <Route path="/tabs/tab3">
+                  <Tab3 />
+                </Route>
+                {/* Settings Sub-Pages from Tab3 */}
+                <Route exact path="/tabs/AccountInfo">
+                  <AccountInfo />
+                </Route>
+                <Route exact path="/tabs/Notifications">
+                  <Notifications />
+                </Route>
+                <Route exact path="/tabs/Payment">
+                  <Payment />
+                </Route>
+                <Route exact path="/tabs/History">
+                  <History />
+                </Route>
+                <Route exact path="/tabs/Driver">
+                  <Driver />
+                </Route>
+                {/* <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} /> */}
+                <Route path="/tabs/tab2/restaurant/:restaurantId" component={RestaurantMenu} exact />
+
+              </IonRouterOutlet>
+
+              {/* Conditionally render the IonTabBar */}
+              {window.location.pathname !== '/tabs/Driver' && (
+                <IonTabBar slot="bottom">
+                  <IonTabButton tab="tab1" href="/tabs/tab1">
+                    <IonIcon aria-hidden="true" icon={navigateOutline} />
+                    <IonLabel>Navigation</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="tab2" href="/tabs/tab2">
+                    <IonIcon aria-hidden="true" icon={homeOutline} />
+                    <IonLabel>Home</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="tab3" href="/tabs/tab3">
+                    <IonIcon aria-hidden="true" icon={settingsOutline} />
+                    <IonLabel>Settings</IonLabel>
+                  </IonTabButton>
+                </IonTabBar>
+              )}
+            </IonTabs>
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  </CartProvider>
 );
 
 export default App;
