@@ -9,3 +9,6 @@ npm install react-transition-group #for animation, also had VSCode fix issue, wh
 camera sys:
 npm install @capacitor/camera
 npx cap sync
+npm install @ionic/pwa-elements
+npm install @capacitor/preferences
+npm install @capacitor/filesystem

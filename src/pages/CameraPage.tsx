@@ -7,7 +7,12 @@ const CameraPage: React.FC = () => {
 
   return (
     <div>
-      <button onClick={takePhoto}>Take Photo</button>
+      <button 
+        onClick={takePhoto} 
+        style={{ marginTop: '100px' }} // This will move the button 100px down
+      >
+        Take Photo
+      </button>
       <CameraGallery photos={photos} /> {/* ✅ pass photos prop here */}
     </div>
   );
