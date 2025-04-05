@@ -136,7 +136,7 @@ const HomePage: React.FC = () => {
       <IonContent className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 2</IonTitle>
+            <IonTitle size="large">GeoBites</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonList>

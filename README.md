@@ -13,5 +13,6 @@ npx cap sync
 npm install @ionic/pwa-elements
 npm install @capacitor/preferences
 npm install @capacitor/filesystem
+npm install @capacitor/geolocation
 
 npm install firebase

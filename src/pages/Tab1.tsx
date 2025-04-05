@@ -1,17 +1,21 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/react';
 import { useState, useEffect } from 'react';
-import Map from '../components/Map'; // Assuming the map component is here
+import { refresh } from 'ionicons/icons';
+import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
-import { db } from './firebase'; // Assuming Firebase is set up
-import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase';
+import { doc, getDoc, collection, query, where, onSnapshot, limit, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
   const [showImage, setShowImage] = useState(false);
   const [orderLocation, setOrderLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [photoURL, setPhotoURL] = useState<string | null>(null);
-  const [orderId, setOrderId] = useState<string>("cJeYkq9leurLig8cDR2t"); // Set the actual order ID from your Firebase
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [customerName, setCustomerName] = useState<string | null>(null);
+  const [orderItems, setOrderItems] = useState<any[]>([]);
 
   const openImage = () => {
     setShowImage(true);
@@ -21,55 +25,174 @@ const Tab1: React.FC = () => {
     setShowImage(false);
   };
 
-  useEffect(() => {
-    // Fetch order details from Firebase using the orderId state
-    const fetchOrderDetails = async () => {
-      try {
-        const orderDocRef = doc(db, "orders", orderId);
-        const orderDoc = await getDoc(orderDocRef);
-        
-        if (orderDoc.exists()) {
-          const orderData = orderDoc.data();
-          console.log("Order data fetched:", orderData);
-          
-          // Set location if it exists
-          if (orderData?.location) {
-            setOrderLocation({
-              latitude: orderData.location.latitude,
-              longitude: orderData.location.longitude
-            });
-          }
-          
-          // Set photo URL if it exists
-          if (orderData?.photoURL) {
-            setPhotoURL(orderData.photoURL);
-          }
-        } else {
-          console.error("Order document does not exist");
-        }
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-      }
-    };
-    
-    if (orderId) {
-      fetchOrderDetails();
+  // Function to clear current order state
+  const clearOrderState = () => {
+    setOrderLocation(null);
+    setPhotoURL(null);
+    setOrderId(null);
+    setCustomerName(null);
+    setOrderItems([]);
+  };
+
+  // Determine app state based on Firebase flags
+  const determineAppState = (confirmed: boolean, accepted: boolean) => {
+    if (confirmed === true && accepted === true) {
+      return 'normal';
+    } else if (accepted === true && confirmed === false) {
+      return 'pending';
+    } else {
+      return 'waiting';
     }
-  }, [orderId]); // Re-fetch if orderId changes
+  };
+
+  // Function to fetch a new order
+  const fetchNewOrder = async () => {
+    setIsLoading(true);
+    
+    try {
+      // If there's a current order, delete it from the database first
+      if (orderId) {
+        try {
+          await deleteDoc(doc(db, "orders", orderId));
+          console.log(`Previous order ${orderId} deleted successfully`);
+        } catch (deleteError) {
+          console.error("Error deleting previous order:", deleteError);
+        }
+      }
+      
+      // Clear current order data
+      clearOrderState();
+      
+      // Query for any order
+      const ordersRef = collection(db, "orders");
+      const q = query(
+        ordersRef,
+        limit(1)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        const orderDoc = querySnapshot.docs[0];
+        const newOrderId = orderDoc.id;
+        const orderData = orderDoc.data();
+        
+        console.log("New order fetched:", newOrderId, orderData);
+        
+        // Update state with new order data
+        setOrderId(newOrderId);
+        
+        if (orderData.location) {
+          setOrderLocation({
+            latitude: orderData.location.latitude,
+            longitude: orderData.location.longitude
+          });
+        }
+        
+        if (orderData.photoURL) {
+          setPhotoURL(orderData.photoURL);
+        }
+        
+        if (orderData.customer) {
+          setCustomerName(orderData.customer);
+        }
+        
+        if (orderData.items && Array.isArray(orderData.items)) {
+          setOrderItems(orderData.items);
+        }
+
+        // Set the appropriate app state based on order status fields
+        const confirmed = orderData.confirmed === true;
+        const accepted = orderData.accepted === true;
+        const newState = determineAppState(confirmed, accepted);
+        setAppState(newState);
+        console.log(`Setting app state to ${newState} based on confirmed=${confirmed}, accepted=${accepted}`);
+      } else {
+        console.log("No orders found");
+        // Handle case when no orders are available - state is already cleared above
+      }
+    } catch (error) {
+      console.error("Error fetching new order:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial order fetch
+  useEffect(() => {
+    fetchNewOrder();
+    
+    // Set up listener for new confirmed orders
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, where("confirmed", "==", true));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added" || change.type === "modified") {
+          console.log("New confirmed order detected!");
+          fetchNewOrder();
+        }
+      });
+    }, (error) => {
+      console.error("Error listening for new orders:", error);
+    });
+    
+    // Clean up listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
+  // Set up real-time listener for changes to the current order
+  useEffect(() => {
+    if (!orderId) return;
+    
+    const orderRef = doc(db, "orders", orderId);
+    
+    const unsubscribe = onSnapshot(orderRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const orderData = docSnapshot.data();
+          
+        // Determine the app state based on the order status
+        const confirmed = orderData.confirmed === true;
+        const accepted = orderData.accepted === true;
+        const newState = determineAppState(confirmed, accepted);
+          
+        // Update the app state if it's different
+        if (newState !== appState) {
+          setAppState(newState);
+          console.log(`App state updated to ${newState} based on order data changes`);
+        }
+      }
+    }, (error) => {
+      console.error("Error watching order changes:", error);
+    });
+    
+    return () => unsubscribe();
+  }, [orderId, appState]);
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Order #{orderId}</IonTitle>
+        <div style={{
+          height: '26px',
+          width: '100%',
+          backgroundColor: 'black',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 9999
+        }}></div>
+        <IonToolbar style={{ marginTop: '24px' }}>
+          <IonTitle>
+            {orderId ? `Order #${orderId.substring(0, 8)}...` : 'No Active Order'}
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen className="ion-padding">
-        {/* Interface buttons */}
+        {/* Only View Image Button is visible */}
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           marginBottom: '10px'
         }}>
           {/* View Image Button */}
@@ -83,19 +206,59 @@ const Tab1: React.FC = () => {
               View Order Photo
             </IonButton>
           </div>
-          
-          {/* Test buttons */}
-          <div>
-            <IonButton size="small" onClick={() => setAppState('normal')}>Normal</IonButton>
-            <IonButton size="small" color="warning" onClick={() => setAppState('pending')}>Pending</IonButton>
-            <IonButton size="small" color="success" onClick={() => setAppState('waiting')}>Waiting</IonButton>
-          </div>
         </div>
+        
+        {/* Order information */}
+        {orderId && (
+          <div style={{
+            padding: '10px',
+            borderRadius: '8px',
+            marginBottom: '10px'
+          }}>
+            <h2 style={{ margin: '0 0 5px 0' }}>Customer: {customerName || 'Unknown'}</h2>
+            <div>
+              <strong>Items:</strong>
+              <ul style={{ margin: '5px 0' }}>
+                {orderItems.length > 0 ? (
+                  orderItems.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))
+                ) : (
+                  <li>No items found</li>
+                )}
+              </ul>
+            </div>
+            <div style={{
+              marginTop: '5px',
+              padding: '5px',
+              backgroundColor: 
+                appState === 'normal' ? '#28bb50' : 
+                appState === 'pending' ? '#fff3cd' : '#FFA500',
+              borderRadius: '4px',
+              display: 'inline-block'
+            }}>
+              <strong>Status:</strong> {
+                appState === 'normal' ? 'Delivered' :
+                appState === 'pending' ? 'Delivering' : 'Waiting'
+              }
+            </div>
+          </div>
+        )}
+        
+        {/* Loading indicator */}
+        {isLoading && (
+          <div style={{
+            textAlign: 'center',
+            padding: '20px'
+          }}>
+            <p>Loading new order...</p>
+          </div>
+        )}
         
         {/* Main content area */}
         <div style={{ 
           width: '100%', 
-          height: 'calc(100% - 60px)', // Adjust height to account for buttons
+          height: orderId ? 'calc(100% - 150px)' : 'calc(100% - 60px)', 
           position: 'relative'
         }}>
           {/* Map component */}
@@ -114,6 +277,21 @@ const Tab1: React.FC = () => {
           {/* Overlay screens */}
           {appState === 'pending' && <PendingScreen />}
           {appState === 'waiting' && <WaitingScreen />}
+
+          {/* No order message */}
+          {!orderId && !isLoading && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              textAlign: 'center'
+            }}>
+              <h2>No Active Order</h2>
+              <p>Waiting for new orders...</p>
+            </div>
+          )}
         </div>
 
         {/* Image Popup */}
@@ -148,7 +326,8 @@ const Tab1: React.FC = () => {
               textAlign: 'center',
               maxWidth: '90%'
             }}>
-              Order location: {orderLocation?.latitude.toFixed(6)}, {orderLocation?.longitude.toFixed(6)}
+              {/* Show Coordinates */}
+              {/* Order location: {orderLocation?.latitude.toFixed(6)}, {orderLocation?.longitude.toFixed(6)} */}
             </div>
           </div>
         )}
