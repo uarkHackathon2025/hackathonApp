@@ -122,7 +122,7 @@ const Tab1: React.FC = () => {
       clearOrderState();
       
       // Set the app state to waiting
-      setAppState('waiting');
+      setAppState('normal');
     } catch (error) {
       console.error("Error deleting order:", error);
     } finally {
