@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel, IonButton, IonCard, IonCardContent } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import { app, db } from './firebase'
+import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
 
 import './Driver.css';
 
