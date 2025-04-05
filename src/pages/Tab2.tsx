@@ -8,9 +8,17 @@ import {
   IonInfiniteScroll, 
   IonInfiniteScrollContent,
   IonList,
+  IonFab,
+  IonFabButton,
+  IonFabList,  
+  IonIcon, 
   IonItem,
   IonAvatar,
   IonLabel, } from '@ionic/react';
+
+  import {
+    cartSharp
+  } from 'ionicons/icons';
   
 import ExploreContainer from '../components/ExploreContainer';
 import React, { useState, useEffect } from 'react';
@@ -38,13 +46,9 @@ const HomePage: React.FC = () => {
         <IonToolbar>
           <IonSearchbar color="primary" placeholder="Search"></IonSearchbar>
         </IonToolbar>
-      {/* Add logo under the search bar */}
-      <div style={{ padding: '10px', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#000' }}>GeoBites</h1>
-      </div>
-      </IonHeader>
-
- <IonContent fullscreen style={{ paddingTop: '20px' }}>
+        <IonTitle color="primary" >GeoBites</IonTitle>
+      </IonHeader >
+      <IonContent className="ion-padding">
       <IonHeader collapse="condense">
         <IonToolbar>
           <IonTitle size="large">Tab 2</IonTitle>
@@ -63,6 +67,7 @@ const HomePage: React.FC = () => {
         ))}
       </IonList>
 
+      /* Scroll*/
         <IonInfiniteScroll
         onIonInfinite={(event) => {
               generateItems();
@@ -70,6 +75,13 @@ const HomePage: React.FC = () => {
         }}>
           <IonInfiniteScrollContent></IonInfiniteScrollContent>
         </IonInfiniteScroll>
+
+        /* Shopping Cart Button*/
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton>
+            <IonIcon icon={cartSharp}></IonIcon>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );
