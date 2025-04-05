@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-dom';
 
 
 const CartPage: React.FC = () => {
-  const { cart, totalPrice, removeFromCart } = useCart();
+  const { cart, totalPrice, removeFromCart} = useCart();
   const [username, setUsername] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const history = useHistory();
@@ -38,6 +38,21 @@ const CartPage: React.FC = () => {
       });
 
       console.log("Order successfully added with ID:", docRef.id);
+
+      const clearCart = () => {
+        let index = cart.length-1;
+        for (let item of cart) {
+          removeFromCart(item, index)
+          index--;
+        }
+;      }
+
+      // clear cart
+      setTimeout(() => {
+        clearCart();
+        console.log("Cart cleared after timeout");
+      }, 8000);
+
       // Optionally clear cart or navigate
       history.push('/tabs/tab1')
 
@@ -93,7 +108,7 @@ const CartPage: React.FC = () => {
                     <h2>{item.name}</h2>
                     <p>${item.price.toFixed(2)}</p>
                   </IonLabel>
-                  <IonButton
+            c      <IonButton
                     fill="clear"
                     color="danger"
                     slot="end"
