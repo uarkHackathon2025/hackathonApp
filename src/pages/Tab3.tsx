@@ -1,6 +1,5 @@
 
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/react';
 import './Tab3.css';
 import {personOutline, notificationsOutline, cardOutline, locationOutline, receiptOutline, speedometerOutline } from 'ionicons/icons';
 
