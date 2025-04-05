@@ -17,7 +17,6 @@ import Tab3 from './pages/Tab3'; //navigation
 import AuthPage from './pages/AuthPage'; //authPage
 import ItemDetailPage from './pages/ItemDetailPage'; //Item Details
 
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -60,30 +59,20 @@ import './theme/variables.css';
 import Map from './components/Map';
 import CameraPage from './pages/CameraPage'; // Import CameraPage
 
+// Import the new OrderDetails page
+import OrderDetails from './pages/OrderDetails';
 
 setupIonicReact();
 
-
 const App: React.FC = () => (
-
   <IonApp>
-    
     <IonReactRouter>
-      
       <IonRouterOutlet>
-        {/*<Route path="/camera" component={CameraPage} />}*/}
-
-        {/* Default route now redirects to /camera 
-        <Route exact path="/">
-          <Redirect to="/camera" />
-        </Route>
-        */}
-
+        {/* Default route now redirects to /tabs/tab2 */}
         <Route exact path="/">
           <Redirect to="/tabs/tab2" />
         </Route>
 
-        {/* Tabs wrapped inside their own route */}
         <Route path="/tabs">
           <IonTabs>
             <IonRouterOutlet>
@@ -134,6 +123,9 @@ const App: React.FC = () => (
             )}
           </IonTabs>
         </Route>
+
+        {/* ✅ NEW ORDER DETAILS ROUTE */}
+        <Route exact path="/order/:id" component={OrderDetails} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
