@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-const Map: React.FC = () => {
+interface MapProps {
+  orderLocation?: { latitude: number; longitude: number };
+}
+
+const Map: React.FC<MapProps> = ({ orderLocation }) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<google.maps.Map | null>(null);
 
@@ -45,6 +49,19 @@ const Map: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current || !window.google) return;
 
+    // Force the map to resize when it's mounted
+    const resizeMap = () => {
+      if (mapInstance.current) {
+        google.maps.event.trigger(mapInstance.current, 'resize');
+        
+        // If there's an orderLocation, recenter the map
+        if (orderLocation) {
+          const orderLatLng = { lat: orderLocation.latitude, lng: orderLocation.longitude };
+          mapInstance.current.setCenter(orderLatLng);
+        }
+      }
+    };
+
     const fallback = { lat: 37.7749, lng: -122.4194 };
 
     const initMap = (position: GeolocationPosition) => {
@@ -57,14 +74,13 @@ const Map: React.FC = () => {
         center: userLocation,
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.SATELLITE,
-        styles: [
-          {
-            featureType: 'all',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }],
-          },
-        ],
-        mapTypeControl: false, // Optional: removes the map type toggle
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+          position: google.maps.ControlPosition.TOP_RIGHT,
+        },
+        fullscreenControl: true,
+
       });
 
       // Circle around user
@@ -79,27 +95,27 @@ const Map: React.FC = () => {
         strokeWeight: 2,
       });
 
-      // Add custom POIs
-      POIS.forEach(poi => {
-        const marker = new google.maps.Marker({
-          position: poi.position,
+      // If there's an orderLocation, center the map on that and add a marker
+      if (orderLocation) {
+        const orderLatLng = { lat: orderLocation.latitude, lng: orderLocation.longitude };
+        
+        // Center the map to the order location
+        mapInstance.current.setCenter(orderLatLng);
+
+        // Add a marker for the order location
+        new google.maps.Marker({
+          position: orderLatLng,
           map: mapInstance.current!,
-          title: poi.name,
+          title: 'Order Location',
+          animation: google.maps.Animation.DROP,
+          icon: {
+            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+          }
         });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `
-            <div>
-              <h3 style="margin:0; color:#333;">${poi.name}</h3>
-              <p style="margin:0; color:#333;">${poi.description}</p>
-            </div>
-          `,
-        });
-
-        marker.addListener('click', () => {
-          infoWindow.open(mapInstance.current!, marker);
-        });
-      });
+      }
+      
+      // Force a resize after the map is created
+      setTimeout(resizeMap, 300);
     };
 
     const handleError = () => {
@@ -112,7 +128,15 @@ const Map: React.FC = () => {
     navigator.geolocation.getCurrentPosition(initMap, handleError, {
       enableHighAccuracy: true,
     });
-  }, []);
+
+    // Add event listener for window resize
+    window.addEventListener('resize', resizeMap);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('resize', resizeMap);
+    };
+  }, [orderLocation]); // Re-run when orderLocation changes
 
   return (
     <div
@@ -120,6 +144,9 @@ const Map: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        overflow: 'hidden'
       }}
     />
   );

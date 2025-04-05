@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel, IonButton, IonCard, IonCardContent } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { app, db } from './firebase'
-import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
+import { app, db } from './firebase';
+import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 
 import './Driver.css';
 
@@ -18,44 +18,38 @@ const Driver: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    // 🔌 Placeholder: Replace with Firebase connection
-
+    // Fetch orders from Firebase on component mount
     const tastQuery = query(collection(db, 'orders'));
-      const unsubscribe = onSnapshot(tastQuery, (querySnapshot) => {
-          const ordersFirestore = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setOrders(ordersFirestore);
-      });
+    const unsubscribe = onSnapshot(tastQuery, (querySnapshot) => {
+      const ordersFirestore = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setOrders(ordersFirestore);
+    });
 
-    // setOrders([
-    //   {
-    //     id: 'order1',
-    //     customer: 'Alice',
-    //     items: ['Taco', 'Nachos', 'Soda'],
-    //     accepted: false
-    //   },
-    //   {
-    //     id: 'order2',
-    //     customer: 'Bob',
-    //     items: ['Burger', 'Fries'],
-    //     accepted: false
-    //   }
-    // ]);
+    // Cleanup on unmount
+    return () => unsubscribe();
   }, []);
 
-  const handleAccept = (id: string) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === id ? { ...order, accepted: true } : order
-      )
-    );
+  const handleAccept = async (id: string) => {
+    try {
+      // Update Firestore document: set accepted to true
+      const orderRef = doc(db, 'orders', id);
+      await setDoc(orderRef, { accepted: true }, { merge: true });
 
-    // TODO: 🔥 Update Firebase order status here
+      // Update local state to reflect accepted status
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === id ? { ...order, accepted: true } : order
+        )
+      );
 
-    // Navigate to detailed view
-    history.push(`/order/${id}`);
+      // Navigate to detailed order view
+      history.push(`/order/${id}`);
+    } catch (error) {
+      console.error("Failed to accept order:", error);
+    }
   };
 
   return (
