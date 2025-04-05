@@ -145,3 +145,4 @@ const ItemDetailPage: React.FC = () => {
 };
 
 export default ItemDetailPage;
+

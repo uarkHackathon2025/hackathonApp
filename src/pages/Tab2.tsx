@@ -12,8 +12,6 @@ import {
   IonFab, 
   IonFabButton, 
   IonIcon,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent
 } from '@ionic/react';
 
 import { cartSharp } from 'ionicons/icons';
@@ -27,27 +25,7 @@ const HomePage: React.FC = () => {
   const [cart, setCart] = useState<{ id: number; name: string }[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const generateItems = () => {
-    const newItems = [];
-    for (let i = 0; i < 20; i++) {
-      newItems.push({
-        id: items.length + i + 1,
-        name: generateRandomName(),
-        price: 1.0 // placeholder price variable until Gabe pushes
-      });
-    }
-    setItems([...items, ...newItems]);
-  };
 
-  const generateRandomName = () => {
-    const adjectives = ['Spicy', 'Savory', 'Crispy', 'Tangy', 'Sweet', 'Juicy', 'Grilled', 'Roasted','Zesty','Meaty','Big','Yummy','Fat','Succulent','Super'];
-    const dishes = ['Taco', 'Burger', 'Noodle Bowl', 'Rice Plate', 'Wrap', 'Pizza', 'Sandwich', 'Curry','Fried Chicken','Fish and Chips','Adrian','Josh','Santosh','Felix','Matthew'];
-  
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const dish = dishes[Math.floor(Math.random() * dishes.length)];
-  
-    return `${adjective} ${dish}`;
-  };
 
   // add to shopping cart
   const addToCart = (item: { id: number; name: string; price: number }) => {
@@ -55,11 +33,6 @@ const HomePage: React.FC = () => {
     setTotalPrice(prev => prev + item.price);
     console.log(`${item.name} added to cart`);
   };
-
-  useEffect(() => {
-    generateItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
 
