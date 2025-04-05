@@ -1,5 +1,22 @@
 import { useParams } from 'react-router-dom';
-import { IonPage, IonContent, IonItem, IonAvatar, IonLabel, IonList } from '@ionic/react';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonContent,
+  IonAvatar,
+  IonLabel,
+  IonItem,
+  IonList,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonText
+} from '@ionic/react';
 import { useCart } from '../components/CartContent';
 import { restaurants } from './Tab2';
 
@@ -18,7 +35,6 @@ export interface Restaurant{
 
 }
 
-
 const RestaurantMenu: React.FC = () => {
   const { restaurantId } = useParams<{ restaurantId: string }>();
   const { addToCart } = useCart();
@@ -28,7 +44,30 @@ const RestaurantMenu: React.FC = () => {
 
   return (
     <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonBackButton text="Back" />
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
       <IonContent>
+        {/* Display restaurant icon */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img 
+            src={restaurant.icon} 
+            alt={restaurant.name} 
+            style={{ width: '48px', height: '48px', borderRadius: '40%', objectFit: 'cover' }} 
+          />
+          <span>{restaurant.name}</span>
+        </div>
+        {/* Restaurant description */}
+                <IonItem>
+                  <IonLabel>
+        
+                    <p>{restaurant.description}</p>
+                  </IonLabel>
+                </IonItem>
         <IonList>
           {restaurant.foodItems.map((item: FoodItem, index: number) => (
             <IonItem
