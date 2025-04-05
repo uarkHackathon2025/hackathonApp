@@ -1,4 +1,6 @@
-import { IonContent, IonHeader, IonFooter, IonPage, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/react';
+
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import ExploreContainer from '../components/ExploreContainer';
 import './Tab3.css';
 import {personOutline, notificationsOutline, cardOutline, locationOutline, receiptOutline, speedometerOutline } from 'ionicons/icons';
 
@@ -46,3 +48,4 @@ const Tab3: React.FC = () => {
 };
 
 export default Tab3;
+
