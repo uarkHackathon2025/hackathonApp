@@ -17,20 +17,30 @@ const Driver: React.FC = () => {
 
   useEffect(() => {
     // 🔌 Placeholder: Replace with Firebase connection
-    setOrders([
-      {
-        id: 'order1',
-        customer: 'Alice',
-        items: ['Taco', 'Nachos', 'Soda'],
-        accepted: false
-      },
-      {
-        id: 'order2',
-        customer: 'Bob',
-        items: ['Burger', 'Fries'],
-        accepted: false
-      }
-    ]);
+
+    const tastQuery = query(collection(db, 'orders'));
+      const unsubscribe = onSnapshot(tastQuery, (querySnapshot) => {
+          const ordersFirestore = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setOrders(ordersFirestore);
+      });
+
+    // setOrders([
+    //   {
+    //     id: 'order1',
+    //     customer: 'Alice',
+    //     items: ['Taco', 'Nachos', 'Soda'],
+    //     accepted: false
+    //   },
+    //   {
+    //     id: 'order2',
+    //     customer: 'Bob',
+    //     items: ['Burger', 'Fries'],
+    //     accepted: false
+    //   }
+    // ]);
   }, []);
 
   const handleAccept = (id: string) => {
