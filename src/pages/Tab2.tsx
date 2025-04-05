@@ -21,9 +21,6 @@ import React, { useEffect, useState } from 'react'; // Add useState here
 import { useCart } from '../components/CartContent';
 import { useHistory } from 'react-router-dom';
 
-
-
-
 export const restaurants = [
   {
     id: 1,
@@ -102,15 +99,21 @@ const HomePage: React.FC = () => {
 
   const history = useHistory();
 
-  const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
-
+  const filteredRestaurants = restaurants.filter(restaurant =>
+    restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonSearchbar color="primary" placeholder="Search"></IonSearchbar>
+        <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)} // Update search term dynamically
+            color="primary"
+            debounce={300} // Optional: Add debounce for better performance
+            placeholder="Search"
+          />
         </IonToolbar>
         <IonTitle color="primary">GeoBites</IonTitle>
       </IonHeader>
@@ -121,7 +124,7 @@ const HomePage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonList>
-          {restaurants.map((restaurant) => (
+          {filteredRestaurants.map((restaurant) => (
             <Link to={`/tabs/tab2/restaurant/${restaurant.id}`} key={restaurant.id}>
               <IonItem>
                 <IonAvatar slot="start">
