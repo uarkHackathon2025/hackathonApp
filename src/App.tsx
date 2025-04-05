@@ -85,6 +85,10 @@ const App: React.FC = () => (
             <Redirect to="/tabs/tab2" />
           </Route>
 
+          <Route exact path="/order/:id">
+            <OrderDetails/>
+          </Route>
+
           {/* Tabs wrapped inside their own route */}
           <Route path="/tabs">
             <IonTabs>

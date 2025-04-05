@@ -1,9 +1,8 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { usePhotoGallery } from '../hooks/usePhotoGallery';
-import CameraGallery from '../components/CameraGallery';
-
+import { app, db } from './firebase'
+import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
 
 interface Order {
     id: string;
@@ -13,37 +12,51 @@ interface Order {
     confirmed?: boolean; // New field for confirming delivery
 }
 
+
 const OrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [order, setOrder] = useState<Order | null>(null);
-    const { photos, takePhoto } = usePhotoGallery();
-    
+    const [dummyOrders, setDummyOrders] = useState<Order[]>([]);
+
+    console.log(id);
 
     useEffect(() => {
-        // 🔌 Replace with actual Firestore query based on `id`
-        const dummyOrders: Order[] = [
-            {
-                id: 'order1',
-                customer: 'Alice',
-                items: ['Taco', 'Nachos', 'Soda'],
-                address: '123 Main St, Dallas, TX',
-            },
-            {
-                id: 'order2',
-                customer: 'Bob',
-                items: ['Burger', 'Fries'],
-                address: '456 Elm St, Fort Worth, TX',
-            },
-        ];
-
-        const found = dummyOrders.find((o) => o.id === id);
-        setOrder(found || null);
+        const tastQuery = query(collection(db, 'orders'));
+        const unsubscribe = onSnapshot(tastQuery, (querySnapshot) => {
+            const ordersFirestore = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+    
+            setDummyOrders(ordersFirestore);
+    
+            const found = ordersFirestore.find((o) => o.id === id);
+            console.log(found);
+            setOrder(found || null);
+        });
+    
+        return () => unsubscribe();
     }, [id]);
+    
+
+    // const dummyOrders: Order[] = [
+        //     {
+        //         id: 'order1',
+        //         customer: 'Alice',
+        //         items: ['Taco', 'Nachos', 'Soda'],
+        //         address: '123 Main St, Dallas, TX',
+        //     },
+        //     {
+        //         id: 'order2',
+        //         customer: 'Bob',
+        //         items: ['Burger', 'Fries'],
+        //         address: '456 Elm St, Fort Worth, TX',
+        //     },
+        // ];
 
     const handleConfirmDelivery = () => {
         if (order) {
             setOrder({ ...order, confirmed: true });
-            takePhoto();
             // TODO: 🔥 Update Firebase order confirmation status here
         }
     };
