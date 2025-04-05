@@ -58,6 +58,8 @@ import './theme/variables.css';
 
 //Map
 import Map from './components/Map';
+import CameraPage from './pages/CameraPage'; // Import CameraPage
+
 
 setupIonicReact();
 
@@ -69,14 +71,16 @@ const App: React.FC = () => (
     <IonReactRouter>
       
       <IonRouterOutlet>
-        {/* Route for AuthPage */}
-        <Route exact path="/auth">
-          <AuthPage />
-        </Route>
+        {/*<Route path="/camera" component={CameraPage} />}*/}
 
-        {/* Default route redirects to AuthPage */}
+        {/* Default route now redirects to /camera 
         <Route exact path="/">
-          <Redirect to="/auth" />
+          <Redirect to="/camera" />
+        </Route>
+        */}
+
+        <Route exact path="/">
+          <Redirect to="/tabs/tab2" />
         </Route>
 
         {/* Tabs wrapped inside their own route */}
@@ -108,22 +112,26 @@ const App: React.FC = () => (
               <Route exact path="/tabs/Driver">
                 <Driver />
               </Route>
+              <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} />
             </IonRouterOutlet>
 
-            <IonTabBar slot="bottom">
-              <IonTabButton tab="tab1" href="/tabs/tab1">
-                <IonIcon aria-hidden="true" icon={navigateOutline} />
-                <IonLabel>Navigation</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab2" href="/tabs/tab2">
-                <IonIcon aria-hidden="true" icon={homeOutline} />
-                <IonLabel>Home</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab3" href="/tabs/tab3">
-                <IonIcon aria-hidden="true" icon={settingsOutline} />
-                <IonLabel>Settings</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
+            {/* Conditionally render the IonTabBar */}
+            {window.location.pathname !== '/tabs/Driver' && (
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="tab1" href="/tabs/tab1">
+                  <IonIcon aria-hidden="true" icon={navigateOutline} />
+                  <IonLabel>Navigation</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab2" href="/tabs/tab2">
+                  <IonIcon aria-hidden="true" icon={homeOutline} />
+                  <IonLabel>Home</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab3" href="/tabs/tab3">
+                  <IonIcon aria-hidden="true" icon={settingsOutline} />
+                  <IonLabel>Settings</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            )}
           </IonTabs>
         </Route>
       </IonRouterOutlet>
