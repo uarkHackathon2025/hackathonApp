@@ -137,7 +137,7 @@ const HomePage: React.FC = () => {
         
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <div style={{ position: 'relative', width: '56px', height: '56px' }}>
-          <IonFabButton onClick={() => history.push('/cart')}>
+          <IonFabButton onClick={() => history.push('/tabs/CartPage')}>
             <IonIcon icon={cartSharp}></IonIcon>
           </IonFabButton>
 

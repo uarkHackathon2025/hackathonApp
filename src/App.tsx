@@ -16,7 +16,6 @@ import Tab1 from './pages/Tab1'; //settings
 import Tab2 from './pages/Tab2'; //home
 import Tab3 from './pages/Tab3'; //navigation
 import AuthPage from './pages/AuthPage'; //authPage
-import ItemDetailPage from './pages/ItemDetailPage'; //Item Details
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,6 +39,9 @@ import Notifications from './pages/Notifications';
 import Payment from './pages/Payment';
 import History from './pages/History';
 import Driver from './pages/Driver';
+
+/* Sub-pages for Tab2 */
+<Route path="/tabs/tab2/cart" component={CartPage} />
 
 /**
  * Ionic Dark Mode
@@ -120,11 +122,16 @@ const App: React.FC = () => (
                 <Route exact path="/tabs/Driver">
                   <Driver />
                 </Route>
+                <Route exact path="/tabs/CartPage">
+                  <CartPage />
+                </Route>
+
                 {/* <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} /> */}
                 
                 <Route path="/tabs/tab2/restaurant/:restaurantId" component={RestaurantMenu} exact />
+
                 
-                <Route path="/cart" component={CartPage} exact />
+                
 
 
               </IonRouterOutlet>
