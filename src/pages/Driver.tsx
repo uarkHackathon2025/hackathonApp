@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel, IonButton, IonCard, IonCardContent } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel, IonButton, IonCard, IonCardContent, IonButtons, IonBackButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { app, db } from './firebase';
 import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
@@ -66,7 +66,15 @@ const Driver: React.FC = () => {
           //padding: '5px 5px'
         }}></div>
         <IonToolbar style={{ marginTop: '24px' }}>
-          <IonTitle>Driver</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/" />
+          </IonButtons>
+
+          <IonTitle style = {{fontSize: '24px'}} className="ion-text-center">Driver</IonTitle>
+
+          <IonButtons slot="end">
+            <div style={{ width: '40px' }} /> {/* Invisible spacer */}
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
