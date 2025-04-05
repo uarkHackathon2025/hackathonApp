@@ -94,7 +94,70 @@ const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  
+
+  // Hardcoded data
+  const restaurants = [
+    {
+      id: 1,
+      name: 'Taco Town',
+      icon: 'https://i.imgur.com/bRv3En1.jpeg',
+      foodItems: [
+        { id: 1, name: 'Spicy Taco', icon: 'https://monkeyandmekitchenadventures.com/wp-content/uploads/2019/06/Spicy-Moroccan-Tacos_19.jpg', price: '$2.50' },
+        { id: 2, name: 'Beef Taco', icon: 'https://kaynutrition.com/wp-content/uploads/2023/08/shredded-beef-tacos.jpg', price: '$3.00' },
+        { id: 3, name: 'Chicken Taco', icon: 'https://hips.hearstapps.com/hmg-prod/images/chicken-tacos-lead-659443cbe4a7a.jpg?crop=1xw:1xh;center,top&resize=1200:*', price: '$3.25' },
+        { id: 4, name: 'Veggie Taco', icon: 'https://www.connoisseurusveg.com/wp-content/uploads/2025/02/veggie-tacos-7.jpg', price: '$2.75' },
+        { id: 5, name: 'Fish Taco', icon: 'https://www.urbanbakes.com/wp-content/uploads/2019/05/Crunchy-Fish-Tacos-with-Avocado-Lime-Sauce-URBAN-BAKES-7.1.jpg', price: '$3.50' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Burger Shack',
+      icon: 'https://www.wikihow.com/images/a/a7/Draw-the-Krusty-Krab-Step-34.jpg',
+      foodItems: [
+        { id: 1, name: 'Cheeseburger', icon: 'https://example.com/cheeseburger.png', price: '$5.00' },
+        { id: 2, name: 'Bacon Burger', icon: 'https://example.com/bacon-burger.png', price: '$5.50' },
+        { id: 3, name: 'Veggie Burger', icon: 'https://example.com/veggie-burger.png', price: '$4.75' },
+        { id: 4, name: 'Chicken Burger', icon: 'https://example.com/chicken-burger.png', price: '$5.25' },
+        { id: 5, name: 'BBQ Burger', icon: 'https://example.com/bbq-burger.png', price: '$5.75' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Pizza Place',
+      icon: 'https://ih1.redbubble.net/image.5119850856.5206/st,small,507x507-pad,600x600,f8f8f8.u7.jpg',
+      foodItems: [
+        { id: 1, name: 'Pepperoni Pizza', icon: 'https://example.com/pepperoni-pizza.png', price: '$8.00' },
+        { id: 2, name: 'Margherita Pizza', icon: 'https://example.com/margherita-pizza.png', price: '$7.50' },
+        { id: 3, name: 'BBQ Chicken Pizza', icon: 'https://example.com/bbq-chicken-pizza.png', price: '$9.00' },
+        { id: 4, name: 'Hawaiian Pizza', icon: 'https://example.com/hawaiian-pizza.png', price: '$8.50' },
+        { id: 5, name: 'Veggie Pizza', icon: 'https://example.com/veggie-pizza.png', price: '$7.75' }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Noodle ',
+      icon: 'https://www.kitchensanctuary.com/wp-content/uploads/2024/03/Stir-Fried-Noodles-with-Beansprouts-tall-FS.jpg',
+      foodItems: [
+        { id: 1, name: 'Spicy Noodles', icon: 'https://example.com/spicy-noodles.png', price: '$6.00' },
+        { id: 2, name: 'Soba Noodles', icon: 'https://example.com/soba-noodles.png', price: '$5.75' },
+        { id: 3, name: 'Ramen', icon: 'https://example.com/ramen.png', price: '$7.00' },
+        { id: 4, name: 'Pad Thai', icon: 'https://example.com/pad-thai.png', price: '$7.50' },
+        { id: 5, name: 'Pho', icon: 'https://example.com/pho.png', price: '$7.25' }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Sandwich Hub',
+      icon: 'https://images.ctfassets.net/uexfe9h31g3m/4bBWJofhws8ewqIe0206cQ/fa6f419a9171a318b160dfec0f736cb2/New_York_Club_Sandwich_recipe_web.jpg?w=1024&h=768&fm=webp&fit=thumb&q=90',
+      foodItems: [
+        { id: 1, name: 'Chicken Sandwich', icon: 'https://example.com/chicken-sandwich.png', price: '$4.50' },
+        { id: 2, name: 'Grilled Cheese', icon: 'https://example.com/grilled-cheese.png', price: '$3.75' },
+        { id: 3, name: 'BLT', icon: 'https://example.com/blt.png', price: '$4.25' },
+        { id: 4, name: 'Veggie Sandwich', icon: 'https://example.com/veggie-sandwich.png', price: '$4.00' },
+        { id: 5, name: 'Turkey Sandwich', icon: 'https://example.com/turkey-sandwich.png', price: '$4.75' }
+      ]
+    }
+  ];
 
   return (
     <IonPage>

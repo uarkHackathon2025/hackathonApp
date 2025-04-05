@@ -17,7 +17,6 @@ import Tab3 from './pages/Tab3'; //navigation
 import AuthPage from './pages/AuthPage'; //authPage
 import ItemDetailPage from './pages/ItemDetailPage'; //Item Details
 
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -62,9 +61,10 @@ import CameraPage from './pages/CameraPage'; // Import CameraPage
 import { CartProvider } from './components/CartContent';
 import RestaurantMenu from './pages/RestaurantMenu';
 
+// Import the new OrderDetails page
+import OrderDetails from './pages/OrderDetails';
 
 setupIonicReact();
-
 
 const App: React.FC = () => (
   <CartProvider>
