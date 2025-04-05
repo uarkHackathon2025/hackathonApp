@@ -13,13 +13,38 @@ import {
 } from '@ionic/react';
 import { useCart } from '../components/CartContent';
 import { FoodItem } from './RestaurantMenu';
+import { db } from './firebase'; // Adjust path based on your project structure
+import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 
 const CartPage: React.FC = () => {
   const { cart, totalPrice } = useCart();
 
-  const handleSubmitOrder = () => {
-    console.log('Submitting order:', cart);
-    // Later: send to backend
+  const handleSubmitOrder = async () => {
+    try {
+      const orderData = {
+        accepted: false,
+        confirmed: false,
+        customer: "Doug", // Replace with dynamic user name if needed
+        id: "", // Will update this after adding
+        items: cart.map(item => item.name),
+        // createdAt: new Date()
+      };
+  
+      // 1. Add the document
+      const docRef = await addDoc(collection(db, 'orders'), orderData);
+  
+      // 2. Optionally update with the auto-generated ID
+      await setDoc(docRef, {
+        ...orderData,
+        id: docRef.id
+      });
+  
+      console.log("Order successfully added with ID:", docRef.id);
+      // Optionally clear cart, show toast, navigate, etc.
+  
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
   };
 
   return (
