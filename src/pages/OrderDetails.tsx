@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { app, db } from './firebase'
 import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
+import { usePhotoGallery } from '../hooks/usePhotoGallery';
+import CameraGallery from '../components/CameraGallery';
+
 
 interface Order {
     id: string;
@@ -17,6 +20,7 @@ const OrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [order, setOrder] = useState<Order | null>(null);
     const [dummyOrders, setDummyOrders] = useState<Order[]>([]);
+    const { photos, takePhoto } = usePhotoGallery();
 
     console.log(id);
 
@@ -54,12 +58,34 @@ const OrderDetails: React.FC = () => {
         //     },
         // ];
 
-    const handleConfirmDelivery = () => {
+    const handleConfirmDelivery = async () => {
         if (order) {
-            setOrder({ ...order, confirmed: true });
-            // TODO: 🔥 Update Firebase order confirmation status here
+            // Take a photo and store it in a variable
+            const newPhoto = await takePhoto();
+    
+            // Get the current geolocation
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const location = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    };
+    
+                    console.log("Photo taken:", newPhoto);
+                    console.log("User location:", location);
+    
+                    // Update local state to reflect delivery confirmation
+                    setOrder({ ...order, confirmed: true });
+    
+                    // TODO: 🔥 Save `newPhoto` and `location` to Firebase with delivery confirmation
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                }
+            );
         }
     };
+        
 
     if (!order) {
         return (
