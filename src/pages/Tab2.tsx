@@ -26,19 +26,21 @@ import React, { useState, useEffect } from 'react';
 import './Tab2.css';
 
 const HomePage: React.FC = () => {
-  const [items, setItems] = useState<{ id: number; name: string }[]>([]);
+  const [items, setItems] = useState<{ id: number; name: string; price: number }[]>([]);
+  const [cart, setCart] = useState<{ id: number; name: string }[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const generateItems = () => {
     const newItems = [];
     for (let i = 0; i < 20; i++) {
       newItems.push({
         id: items.length + i + 1,
-        name: generateRandomName()
+        name: generateRandomName(),
+        price: 1.0 // placeholder price variable until Gabe pushes
       });
     }
     setItems([...items, ...newItems]);
   };
-  
 
   const generateRandomName = () => {
     const adjectives = ['Spicy', 'Savory', 'Crispy', 'Tangy', 'Sweet', 'Juicy', 'Grilled', 'Roasted','Zesty','Meaty','Big','Yummy','Fat','Succulent','Super'];
@@ -48,6 +50,13 @@ const HomePage: React.FC = () => {
     const dish = dishes[Math.floor(Math.random() * dishes.length)];
   
     return `${adjective} ${dish}`;
+  };
+
+  // add to shopping cart
+  const addToCart = (item: { id: number; name: string; price: number }) => {
+    setCart(prev => [...prev, item]);
+    setTotalPrice(prev => prev + item.price);
+    console.log(`${item.name} added to cart`);
   };
 
   useEffect(() => {
@@ -74,18 +83,23 @@ const HomePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
         <ExploreContainer name="Home page" />
-        <IonList>
 
-        {items
-          .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
-          .map((item, index) => (
-            <IonItem key={item.id}>
-              <IonAvatar slot="start">
+      <IonList>
+
+        {filteredItems.map((item, index) => (
+          <IonItem
+            key={item.id}
+            button
+            onClick={() => addToCart(item)}
+          >
+            <IonAvatar slot="start">
                 <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
-              </IonAvatar>
-              <IonLabel>{item.name}</IonLabel>
-            </IonItem>
-          ))}
+            </IonAvatar>
+            <IonLabel>{item.name}</IonLabel>
+
+          </IonItem>
+        ))}
+
       </IonList>
 
       {/* Scroll */}
@@ -98,11 +112,35 @@ const HomePage: React.FC = () => {
         </IonInfiniteScroll>
 
         {/* Shopping Cart Button */}
+        
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton>
-            <IonIcon icon={cartSharp}></IonIcon>
-          </IonFabButton>
+          <div style={{ position: 'relative', width: '56px', height: '56px' }}>
+            <IonFabButton>
+              <IonIcon icon={cartSharp}></IonIcon>
+            </IonFabButton>
+
+            {cart.length > 0 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  left: '-4px',
+                  backgroundColor: 'red',
+                  color: 'white',
+                  borderRadius: '50%',
+                  padding: '2px 6px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  zIndex: 9999,
+                  boxShadow: '0 0 4px black'
+                }}
+              >
+                {cart.length}
+              </div>
+            )}
+          </div>
         </IonFab>
+
       </IonContent>
     </IonPage>
   );
