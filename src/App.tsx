@@ -115,7 +115,9 @@ const App: React.FC = () => (
                   <Driver />
                 </Route>
                 {/* <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} /> */}
+                
                 <Route path="/tabs/tab2/restaurant/:restaurantId" component={RestaurantMenu} exact />
+                
 
               </IonRouterOutlet>
 
