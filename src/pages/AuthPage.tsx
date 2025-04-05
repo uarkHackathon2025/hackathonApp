@@ -68,7 +68,7 @@ const AuthPage: React.FC = () => {
           <IonTitle>{isSignup ? 'Signup' : 'Login'}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className={`ion-padding ${isSignup ? 'auth-signup' : 'auth-login'}`}>
+      <IonContent className={`ion-padding ${isSignup ? 'auth-signup' : 'auth-login'}`} >
         <IonList className={isSignup ? 'auth-signup' : 'auth-login'}>
           <IonItem>
             <IonLabel position="stacked">Email</IonLabel>
@@ -91,7 +91,7 @@ const AuthPage: React.FC = () => {
           {isSignup ? 'Signup' : 'Login'}
         </IonButton>
         <IonButton 
-          style={{'--background': isSignup ? '#007bff' : '#ffffff'}}
+          //style={{'--background': isSignup ? '#007bff' : '#121212'}}
           expand="block" 
           fill="clear" 
           onClick={() => setIsSignup(!isSignup)}>
