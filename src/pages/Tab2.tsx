@@ -19,6 +19,8 @@ import { Link } from 'react-router-dom';  // Import Link for navigation
 import './Tab2.css';
 import React, { useEffect, useState } from 'react'; // Add useState here
 import { useCart } from '../components/CartContent';
+import { useHistory } from 'react-router-dom';
+
 
 
 
@@ -98,6 +100,8 @@ const HomePage: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  const history = useHistory();
+
   const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
@@ -133,9 +137,9 @@ const HomePage: React.FC = () => {
         
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <div style={{ position: 'relative', width: '56px', height: '56px' }}>
-            <IonFabButton>
-              <IonIcon icon={cartSharp}></IonIcon>
-            </IonFabButton>
+          <IonFabButton onClick={() => history.push('/cart')}>
+            <IonIcon icon={cartSharp}></IonIcon>
+          </IonFabButton>
 
             {cart.length > 0 && (
               <div
