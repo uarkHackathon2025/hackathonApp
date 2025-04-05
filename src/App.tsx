@@ -115,20 +115,23 @@ const App: React.FC = () => (
               <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} />
             </IonRouterOutlet>
 
-            <IonTabBar slot="bottom">
-              <IonTabButton tab="tab1" href="/tabs/tab1">
-                <IonIcon aria-hidden="true" icon={navigateOutline} />
-                <IonLabel>Navigation</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab2" href="/tabs/tab2">
-                <IonIcon aria-hidden="true" icon={homeOutline} />
-                <IonLabel>Home</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab3" href="/tabs/tab3">
-                <IonIcon aria-hidden="true" icon={settingsOutline} />
-                <IonLabel>Settings</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
+            {/* Conditionally render the IonTabBar */}
+            {window.location.pathname !== '/tabs/Driver' && (
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="tab1" href="/tabs/tab1">
+                  <IonIcon aria-hidden="true" icon={navigateOutline} />
+                  <IonLabel>Navigation</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab2" href="/tabs/tab2">
+                  <IonIcon aria-hidden="true" icon={homeOutline} />
+                  <IonLabel>Home</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab3" href="/tabs/tab3">
+                  <IonIcon aria-hidden="true" icon={settingsOutline} />
+                  <IonLabel>Settings</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            )}
           </IonTabs>
         </Route>
       </IonRouterOutlet>
