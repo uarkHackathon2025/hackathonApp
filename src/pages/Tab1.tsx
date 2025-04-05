@@ -201,10 +201,10 @@ const Tab1: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen className="ion-padding">
-        {/* Top button row */}
+        {/* Top button row - Only showing the View Image button */}
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start', // Changed from space-between since there's only one button now
           marginBottom: '10px'
         }}>
           {/* View Image Button */}
@@ -219,26 +219,12 @@ const Tab1: React.FC = () => {
             </IonButton>
           </div>
           
-          {/* "I got my Order!" button - only visible in normal/delivered state */}
-          {appState === 'normal' && (
-            <div>
-              <IonButton 
-                size="default" 
-                color="primary" 
-                onClick={handleOrderReceived}
-                disabled={isLoading}
-              >
-                <IonIcon icon={checkmarkCircle} slot="start" />
-                I got my Order!
-              </IonButton>
-            </div>
-          )}
+          {/* Removed the duplicate "I got my Order!" button that was here */}
         </div>
         
         {/* Order information */}
         {orderId && (
           <div style={{
-            backgroundColor: '#f4f4f4',
             padding: '10px',
             borderRadius: '8px',
             marginBottom: '10px'
@@ -260,8 +246,8 @@ const Tab1: React.FC = () => {
               marginTop: '5px',
               padding: '5px',
               backgroundColor: 
-                appState === 'normal' ? '#d4edff' : 
-                appState === 'pending' ? '#fff3cd' : '#d4f4e6',
+                appState === 'normal' ? '#28bb50' : 
+                appState === 'pending' ? '#FFA500' : '#69b7f4',
               borderRadius: '4px',
               display: 'inline-block'
             }}>
@@ -354,7 +340,6 @@ const Tab1: React.FC = () => {
               textAlign: 'center',
               maxWidth: '90%'
             }}>
-              {/* Removed exact coordinates text */}
               <span>Delivery area</span>
             </div>
           </div>
