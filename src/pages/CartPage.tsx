@@ -6,11 +6,14 @@ import { trashOutline } from "ionicons/icons";
 
 import { db } from './firebase'
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
+import { useHistory } from 'react-router-dom';
+
 
 const CartPage: React.FC = () => {
   const { cart, totalPrice, removeFromCart } = useCart();
   const [username, setUsername] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const history = useHistory();
 
   const handleSubmitOrder = async () => {
     if (!username.trim()) {
@@ -36,6 +39,7 @@ const CartPage: React.FC = () => {
 
       console.log("Order successfully added with ID:", docRef.id);
       // Optionally clear cart or navigate
+      history.push('/tabs/tab1')
 
     } catch (error) {
       console.error("Error submitting order:", error);
