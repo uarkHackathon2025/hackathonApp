@@ -1,0 +1,17 @@
+/* Prevent label overlap */
+.custom-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+  
+  /* Adjust input field padding */
+  .custom-item .ion-input {
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
+  
+  /* If you have small inputs, increase height */
+  .ion-input {
+    min-height: 40px;
+  }
+  
