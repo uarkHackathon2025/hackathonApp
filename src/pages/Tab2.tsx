@@ -17,7 +17,8 @@ import {
   IonLabel, } from '@ionic/react';
 
   import {
-    cartSharp
+    cartSharp,
+    searchCircleSharp
   } from 'ionicons/icons';
   
 import ExploreContainer from '../components/ExploreContainer';
@@ -40,11 +41,15 @@ const HomePage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredItems = items.filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonSearchbar color="primary" placeholder="Search"></IonSearchbar>
+          <IonSearchbar color="primary" placeholder="Search" onIonInput={e => setSearchTerm(e.detail.value!)}></IonSearchbar>
         </IonToolbar>
         <IonTitle color="primary" >GeoBites</IonTitle>
       </IonHeader >
@@ -57,14 +62,16 @@ const HomePage: React.FC = () => {
         <ExploreContainer name="Home page" />
         <IonList>
 
-        {items.map((item, index) => (
-          <IonItem key={item}>
-            <IonAvatar slot="start">
-              <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
-            </IonAvatar>
-            <IonLabel>{item}</IonLabel>
-          </IonItem>
-        ))}
+        {items
+          .filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map((item, index) => (
+            <IonItem key={item}>
+              <IonAvatar slot="start">
+                <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
+              </IonAvatar>
+              <IonLabel>{item}</IonLabel>
+            </IonItem>
+          ))}
       </IonList>
 
       /* Scroll*/
