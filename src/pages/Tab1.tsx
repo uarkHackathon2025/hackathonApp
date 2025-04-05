@@ -6,6 +6,7 @@ import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
 import { db } from './firebase';
 import { doc, getDoc, collection, query, where, onSnapshot, limit, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
+import { showHint } from '../components/HintButton';
 
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
@@ -216,6 +217,18 @@ const Tab1: React.FC = () => {
               disabled={!photoURL}
             >
               View Order Photo
+            </IonButton>
+          </div>
+
+          {/* Hint Button */}
+          <div>
+            <IonButton
+              size="default" 
+              color="success" 
+              onclick={showHint}
+              
+            >
+
             </IonButton>
           </div>
           
