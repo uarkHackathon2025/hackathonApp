@@ -14,8 +14,13 @@ import {
   IonIcon
 } from '@ionic/react';
 
-import { cartSharp } from 'ionicons/icons';
-import { Link } from 'react-router-dom';  // Import Link for navigation
+  import {
+    cartSharp,
+    searchCircleSharp
+  } from 'ionicons/icons';
+  
+import ExploreContainer from '../components/ExploreContainer';
+import React, { useState, useEffect } from 'react';
 import './Tab2.css';
 
 
@@ -84,11 +89,15 @@ const HomePage: React.FC = () => {
     }
   ];
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonSearchbar color="primary" placeholder="Search"></IonSearchbar>
+          <IonSearchbar color="primary" placeholder="Search" onIonInput={e => setSearchTerm(e.detail.value!)}></IonSearchbar>
         </IonToolbar>
         <IonTitle color="primary">GeoBites</IonTitle>
       </IonHeader>
@@ -99,18 +108,26 @@ const HomePage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        <IonList>
-          {restaurants.map((restaurant) => (
-            <Link to={`/tabs/tab2/restaurant/${restaurant.id}`} key={restaurant.id}>
-              <IonItem>
-                <IonAvatar slot="start">
-                  <img src={restaurant.icon} alt={restaurant.name} style={{ width: '40px', height: '40px' }} />
-                </IonAvatar>
-                <IonLabel>{restaurant.name}</IonLabel>
-              </IonItem>
-            </Link>
+        {items
+          .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map((item, index) => (
+            <IonItem key={item.id}>
+              <IonAvatar slot="start">
+                <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
+              </IonAvatar>
+              <IonLabel>{item.name}</IonLabel>
+            </IonItem>
           ))}
-        </IonList>
+      </IonList>
+
+      {/* Scroll */}
+        <IonInfiniteScroll
+        onIonInfinite={(event) => {
+              generateItems();
+              setTimeout(() => event.target.complete(), 500);
+        }}>
+          <IonInfiniteScrollContent></IonInfiniteScrollContent>
+        </IonInfiniteScroll>
 
         {/* Shopping Cart Button */}
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
