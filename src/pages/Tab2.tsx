@@ -115,7 +115,7 @@ const HomePage: React.FC = () => {
             placeholder="Search"
           />
         </IonToolbar>
-        <IonTitle color="primary">GeoBites</IonTitle>
+        <IonTitle color="#f6f8fc">GeoBites</IonTitle>
       </IonHeader>
       <IonContent className="ion-padding">
         <IonHeader collapse="condense">
