@@ -6,13 +6,8 @@ import {personOutline, notificationsOutline, cardOutline, locationOutline, recei
 const Tab3: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 3</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
+        <IonHeader>
           <IonToolbar>
             <IonTitle>Settings</IonTitle>
           </IonToolbar>
