@@ -233,7 +233,7 @@ const Tab1: React.FC = () => {
               padding: '5px',
               backgroundColor: 
                 appState === 'normal' ? '#28bb50' : 
-                appState === 'pending' ? '#fff3cd' : '#FFA500',
+                appState === 'pending' ? '#FFA500' : '#69b7f4',
               borderRadius: '4px',
               display: 'inline-block'
             }}>
