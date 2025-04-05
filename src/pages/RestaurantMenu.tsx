@@ -43,7 +43,7 @@ const RestaurantMenu: React.FC = () => {
     <IonPage>
         <IonHeader>
         <div style={{
-          height: '26px',
+          height: '30px',
           width: '100%',
           backgroundColor: 'black',
           position: 'fixed',
@@ -52,7 +52,7 @@ const RestaurantMenu: React.FC = () => {
           zIndex: 9999
           //padding: '5px 5px'
         }}></div>
-        <IonToolbar style={{ marginTop: '24px' }}>
+        <IonToolbar style={{ marginTop: '35px' }}>
             <IonButtons slot="start">
               <IonBackButton text="Back" />
             </IonButtons>
@@ -64,9 +64,9 @@ const RestaurantMenu: React.FC = () => {
           <img 
             src={restaurant.icon} 
             alt={restaurant.name} 
-            style={{ width: '48px', height: '48px', borderRadius: '40%', objectFit: 'cover' }} 
+            style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }}  // Larger icon size
           />
-          <span>{restaurant.name}</span>
+          <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{restaurant.name}</span>  {/* Larger restaurant name */}
         </div>
         {/* Restaurant description */}
                 <IonItem>
@@ -89,12 +89,16 @@ const RestaurantMenu: React.FC = () => {
               }
             >
               <IonAvatar slot="start">
-                <img src={item.icon} alt={item.name} />
+                <img 
+                  src={item.icon} 
+                  alt={item.name} 
+                  style={{ width: '50px', height: '50px' }}  // Larger avatar icon
+                />
               </IonAvatar>
               <IonLabel>
-                <h2>{item.name}</h2>
-                <p>{item.price}</p>
-              </IonLabel>
+                <h2 style={{ fontSize: '18px' }}>{item.name}</h2>  {/* Larger item name */}
+                <p style={{ fontSize: '18px' }}>{item.price}</p>  {/* Larger price */}
+              </IonLabel>              
               {/* Add button with the plus icon */}
               <IonButton 
                 color='success'
