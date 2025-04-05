@@ -20,6 +20,8 @@ import './Tab2.css';
 import React, { useEffect, useState } from 'react'; // Add useState here
 import { useCart } from '../components/CartContent';
 import { useHistory } from 'react-router-dom';
+import HintButton from '../components/HintButton';
+
 
 export const restaurants = [
   {

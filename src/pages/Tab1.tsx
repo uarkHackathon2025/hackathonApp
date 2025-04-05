@@ -5,6 +5,7 @@ import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
 import { app, db } from './firebase'
 import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot, limit } from 'firebase/firestore'
+import HintButton from '../components/HintButton';
 
 interface OrderData {
   customer: string;
@@ -61,6 +62,11 @@ const Tab1: React.FC = () => {
               View Image
             </IonButton>
           </div>
+
+          {/* Hint Button */}
+        <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 1000}}>
+          <HintButton deliveryLocation={{ lat: 40.7128, lng: -74.0060 }} />
+        </div>
           
           {/* 🧪 Test buttons – easily removable */}
           <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 1000 }}>

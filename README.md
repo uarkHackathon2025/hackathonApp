@@ -15,3 +15,5 @@ npm install @capacitor/preferences
 npm install @capacitor/filesystem
 
 npm install firebase
+
+npm install @capacitor/geolocation
