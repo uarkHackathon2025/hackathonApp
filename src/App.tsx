@@ -35,11 +35,19 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+//Map
+import Map from './components/Map';
+
 setupIonicReact();
 
 const App: React.FC = () => (
+
+
+
   <IonApp>
+    
     <IonReactRouter>
+      
       <IonRouterOutlet>
         {/* Route for AuthPage */}
         <Route exact path="/auth">
