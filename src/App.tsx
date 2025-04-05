@@ -34,6 +34,12 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
+/* Sub-pages for Tab3 */
+import AccountInfo from './pages/AccountInfo';
+import Notifications from './pages/Notifications';
+import Payment from './pages/Payment';
+import History from './pages/History';
+import Driver from './pages/Driver';
 
 /**
  * Ionic Dark Mode
@@ -86,9 +92,24 @@ const App: React.FC = () => (
               <Route path="/tabs/tab3">
                 <Tab3 />
               </Route>
-
-
+              {/* Settings Sub-Pages from Tab3 */}
+              <Route exact path="/tabs/AccountInfo">
+                <AccountInfo />
+              </Route>
+              <Route exact path="/tabs/Notifications">
+                <Notifications />
+              </Route>
+              <Route exact path="/tabs/Payment">
+                <Payment />
+              </Route>
+              <Route exact path="/tabs/History">
+                <History />
+              </Route>
+              <Route exact path="/tabs/Driver">
+                <Driver />
+              </Route>
             </IonRouterOutlet>
+
             <IonTabBar slot="bottom">
               <IonTabButton tab="tab1" href="/tabs/tab1">
                 <IonIcon aria-hidden="true" icon={navigateOutline} />
