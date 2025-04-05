@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { app, db } from './firebase'
 import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { usePhotoGallery } from '../hooks/usePhotoGallery';
 import CameraGallery from '../components/CameraGallery';
 
@@ -58,33 +59,66 @@ const OrderDetails: React.FC = () => {
         //     },
         // ];
 
-    const handleConfirmDelivery = async () => {
-        if (order) {
-            // Take a photo and store it in a variable
-            const newPhoto = await takePhoto();
-    
-            // Get the current geolocation
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const location = {
+        const handleConfirmDelivery = async () => {
+            if (order) {
+              const photo = await takePhoto(); // Get the photo object
+              const storage = getStorage();
+          
+              if (!photo.webPath) {
+                console.error("No photo path available");
+                return;
+              }
+          
+              // Fetch the photo as a blob
+              const response = await fetch(photo.webPath);
+              const blob = await response.blob();
+          
+              // Create a unique file name
+              const fileName = `photo_${new Date().getTime()}.jpeg`;
+              const storageRef = ref(storage, `photos/${fileName}`);
+          
+              // Upload photo to Firebase Storage
+              const uploadTask = uploadBytesResumable(storageRef, blob);
+          
+              uploadTask.on(
+                "state_changed",
+                null,
+                (error) => console.error("Upload failed", error),
+                async () => {
+                  // Get the download URL
+                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          
+                  // Get geolocation
+                  navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                      const location = {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude,
-                    };
-    
-                    console.log("Photo taken:", newPhoto);
-                    console.log("User location:", location);
-    
-                    // Update local state to reflect delivery confirmation
-                    setOrder({ ...order, confirmed: true });
-    
-                    // TODO: 🔥 Save `newPhoto` and `location` to Firebase with delivery confirmation
-                },
-                (error) => {
-                    console.error("Geolocation error:", error);
+                      };
+          
+                      // Update Firestore with delivery confirmation, photo URL, and location
+                      const orderRef = doc(db, "orders", order.id);
+                      await setDoc(orderRef, {
+                        ...order,
+                        confirmed: true,
+                        photoURL: downloadURL,
+                        location: location,
+                      });
+          
+                      console.log("Photo uploaded:", downloadURL);
+                      console.log("Location:", location);
+          
+                      setOrder({ ...order, confirmed: true }); // Update local state
+                    },
+                    (error) => {
+                      console.error("Geolocation error:", error);
+                    }
+                  );
                 }
-            );
-        }
-    };
+              );
+            }
+          };
+          
         
 
     if (!order) {

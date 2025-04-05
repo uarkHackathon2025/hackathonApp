@@ -14,6 +14,8 @@ export function usePhotoGallery() {
     if (photo.webPath) {
       setPhotos([...photos, photo.webPath]); // Add the new photo to the state
     }
+
+    return photo;
   };
 
   return { photos, takePhoto }; // Return both photos and takePhoto
