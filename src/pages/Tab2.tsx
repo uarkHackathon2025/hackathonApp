@@ -90,8 +90,8 @@ const HomePage: React.FC = () => {
   );
 
   return (
-    <IonPage>
-      <IonHeader>
+<IonPage>
+  <IonHeader>
     <div style={{
       height: '26px',
       width: '100%',
@@ -101,22 +101,23 @@ const HomePage: React.FC = () => {
       left: 0,
       zIndex: 9999
     }}></div>
-    <IonToolbar style={{ marginTop: '34px' }}>
-    <IonTitle 
-    color="#f6f8fc" 
-    style={{ 
-    fontSize: '48px', // Even larger size
-    fontWeight: 'bold', 
-    textShadow: '3px 3px 10px rgba(0, 0, 0, 0.8)',  // Stronger shadow
-    textTransform: 'uppercase', // Makes the title uppercase for more emphasis
-    padding: '10px',  // Adds padding around the title for spacing
-    background: 'linear-gradient(90deg, rgb(246, 34, 27) 0%, rgb(231, 184, 27) 100%)', // Geo-themed gradient (green to blue)
-    borderRadius: '10px', // Rounds the corners of the background for style
-    marginTop: '10px' // Adds some space from the top of the screen
-  }}
->
-  GeoBites
-</IonTitle>
+    <IonToolbar style={{ marginTop: '34px', display: 'flex', justifyContent: 'center' }}>
+      <IonTitle 
+        color="#f6f8fc" 
+        style={{ 
+          fontSize: '48px', // Even larger size
+          fontWeight: 'bold', 
+          textShadow: '3px 3px 10px rgba(0, 0, 0, 0.8)',  // Stronger shadow
+          textTransform: 'uppercase', // Makes the title uppercase for more emphasis
+          padding: '10px',  // Adds padding around the title for spacing
+          background: 'linear-gradient(90deg, rgb(246, 34, 27) 0%, rgb(231, 184, 27) 100%)', // Geo-themed gradient (green to blue)
+          borderRadius: '10px', // Rounds the corners of the background for style
+          marginTop: '10px', // Adds some space from the top of the screen
+          textAlign: 'center' // Centers the text in the title
+        }}
+      >
+        GeoBites
+      </IonTitle>
     </IonToolbar>
     <IonToolbar>
       <IonSearchbar
@@ -133,34 +134,34 @@ const HomePage: React.FC = () => {
       />
     </IonToolbar>
   </IonHeader>
-      <IonContent className="ion-padding">
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">GeoBites</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonList>
-          {filteredRestaurants.map((restaurant) => (
-            <Link 
-              to={`/tabs/tab2/restaurant/${restaurant.id}`} 
-              key={restaurant.id}
-              style={{ textDecoration: 'none' }} // Remove underline from the Link
-            >
-              <IonItem>
-                <IonAvatar slot="start">
-                  <img 
-                    src={restaurant.icon} 
-                    alt={restaurant.name} 
-                    style={{ width: '50px', height: '50px' }}  // Larger avatar size
-                  />
-                </IonAvatar>
-                <IonLabel style={{ fontSize: '22px', fontWeight: 'bold' }}>  {/* Larger restaurant name */}
-                  {restaurant.name}
-                </IonLabel>
-              </IonItem>
-            </Link>
-          ))}
-        </IonList>
+  <IonContent className="ion-padding">
+    <IonHeader collapse="condense">
+      <IonToolbar>
+        <IonTitle size="large">GeoBites</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+    <IonList>
+      {filteredRestaurants.map((restaurant) => (
+        <Link 
+          to={`/tabs/tab2/restaurant/${restaurant.id}`} 
+          key={restaurant.id}
+          style={{ textDecoration: 'none' }} // Remove underline from the Link
+        >
+          <IonItem>
+            <IonAvatar slot="start">
+              <img 
+                src={restaurant.icon} 
+                alt={restaurant.name} 
+                style={{ width: '50px', height: '50px' }}  // Larger avatar size
+              />
+            </IonAvatar>
+            <IonLabel style={{ fontSize: '22px', fontWeight: 'bold' }}>
+              {restaurant.name}
+            </IonLabel>
+          </IonItem>
+        </Link>
+      ))}
+    </IonList>
         {/* Shopping Cart Button */}
         
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
