@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonList,
-  IonListHeader,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonCard,
-  IonCardContent
-} from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel, IonButton, IonCard, IonCardContent } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
 import './Driver.css';
 
@@ -25,6 +13,7 @@ interface Order {
 
 const Driver: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const history = useHistory();
 
   useEffect(() => {
     // 🔌 Placeholder: Replace with Firebase connection
@@ -52,6 +41,9 @@ const Driver: React.FC = () => {
     );
 
     // TODO: 🔥 Update Firebase order status here
+
+    // Navigate to detailed view
+    history.push(`/order/${id}`);
   };
 
   return (
@@ -64,7 +56,7 @@ const Driver: React.FC = () => {
 
       <IonContent fullscreen className="ion-padding">
         {orders.map((order) => (
-          <IonCard key={order.id} className="order-card">
+          <IonCard key={order.id} className="order-card ion-margin-bottom">
             <IonCardContent>
               <IonListHeader>
                 <IonLabel>
