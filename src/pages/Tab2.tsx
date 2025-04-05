@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredItems = items.filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <IonPage>
@@ -77,18 +77,16 @@ const HomePage: React.FC = () => {
         <IonList>
 
         {items
-          .filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
+          .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
           .map((item, index) => (
-            <IonItem key={item}>
+            <IonItem key={item.id}>
               <IonAvatar slot="start">
                 <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
               </IonAvatar>
-              <IonLabel>{item}</IonLabel>
+              <IonLabel>{item.name}</IonLabel>
             </IonItem>
           ))}
       </IonList>
-
-        </IonList>
 
       {/* Scroll */}
         <IonInfiniteScroll
