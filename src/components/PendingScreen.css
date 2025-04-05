@@ -1,0 +1,58 @@
+.pending-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+  }
+  
+  .pending-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90%;
+  }
+  
+  .pop-in {
+    animation: pop-in 0.6s ease;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #222; /* dark and bold */
+    font-weight: 600;
+  }
+  
+  .fade-loop {
+    font-size: 1rem;
+    color: #333; /* stronger than before */
+    animation: fade-loop 2s ease-in-out infinite;
+  }
+  
+  
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fade-loop {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
