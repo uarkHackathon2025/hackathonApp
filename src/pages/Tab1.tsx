@@ -5,7 +5,7 @@ import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
 import { db } from './firebase';
-import { doc, getDoc, collection, query, where, limit, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, onSnapshot, limit, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
@@ -34,6 +34,17 @@ const Tab1: React.FC = () => {
     setOrderItems([]);
   };
 
+  // Determine app state based on Firebase flags
+  const determineAppState = (confirmed: boolean, accepted: boolean) => {
+    if (confirmed === true && accepted === true) {
+      return 'normal';
+    } else if (accepted === true && confirmed === false) {
+      return 'pending';
+    } else {
+      return 'waiting';
+    }
+  };
+
   // Function to fetch a new order
   const fetchNewOrder = async () => {
     setIsLoading(true);
@@ -52,11 +63,10 @@ const Tab1: React.FC = () => {
       // Clear current order data
       clearOrderState();
       
-      // Query for unassigned orders with confirmed=true
+      // Query for any order
       const ordersRef = collection(db, "orders");
       const q = query(
-        ordersRef, 
-        where("confirmed", "==", true),
+        ordersRef,
         limit(1)
       );
       
@@ -91,16 +101,14 @@ const Tab1: React.FC = () => {
           setOrderItems(orderData.items);
         }
 
-        // Set the appropriate app state based on order status
-        if (orderData.confirmed === true) {
-          setAppState('normal');
-        } else if (orderData.accepted === true && orderData.confirmed === false) {
-          setAppState('pending');
-        } else {
-          setAppState('waiting');
-        }
+        // Set the appropriate app state based on order status fields
+        const confirmed = orderData.confirmed === true;
+        const accepted = orderData.accepted === true;
+        const newState = determineAppState(confirmed, accepted);
+        setAppState(newState);
+        console.log(`Setting app state to ${newState} based on confirmed=${confirmed}, accepted=${accepted}`);
       } else {
-        console.log("No new orders found");
+        console.log("No orders found");
         // Handle case when no orders are available - state is already cleared above
       }
     } catch (error) {
@@ -113,96 +121,57 @@ const Tab1: React.FC = () => {
   // Initial order fetch
   useEffect(() => {
     fetchNewOrder();
+    
+    // Set up listener for new confirmed orders
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, where("confirmed", "==", true));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added" || change.type === "modified") {
+          console.log("New confirmed order detected!");
+          fetchNewOrder();
+        }
+      });
+    }, (error) => {
+      console.error("Error listening for new orders:", error);
+    });
+    
+    // Clean up listener on component unmount
+    return () => unsubscribe();
   }, []);
 
-  // Function to update order status
-  const updateOrderStatus = async (status: 'normal' | 'pending' | 'waiting') => {
+  // Set up real-time listener for changes to the current order
+  useEffect(() => {
     if (!orderId) return;
     
-    setIsLoading(true);
-    try {
-      const orderRef = doc(db, "orders", orderId);
-      
-      // Update the status in the database based on the button clicked
-      if (status === 'normal') {
-        // Order delivered - confirmation true
-        await updateDoc(orderRef, {
-          confirmed: true,
-          accepted: true
-        });
-      } else if (status === 'pending') {
-        // Order delivering - accepted true, confirmation false
-        await updateDoc(orderRef, {
-          confirmed: false,
-          accepted: true
-        });
-      } else if (status === 'waiting') {
-        // Order waiting - both false
-        await updateDoc(orderRef, {
-          confirmed: false,
-          accepted: false
-        });
+    const orderRef = doc(db, "orders", orderId);
+    
+    const unsubscribe = onSnapshot(orderRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const orderData = docSnapshot.data();
+          
+        // Determine the app state based on the order status
+        const confirmed = orderData.confirmed === true;
+        const accepted = orderData.accepted === true;
+        const newState = determineAppState(confirmed, accepted);
+          
+        // Update the app state if it's different
+        if (newState !== appState) {
+          setAppState(newState);
+          console.log(`App state updated to ${newState} based on order data changes`);
+        }
       }
-      
-      // Update the app state
-      setAppState(status);
-      console.log(`Order ${orderId} status updated to ${status}`);
-    } catch (error) {
-      console.error("Error updating order status:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Function to fetch a specific order by ID
-  const fetchOrderById = async (id: string) => {
-    try {
-      const orderDocRef = doc(db, "orders", id);
-      const orderDoc = await getDoc(orderDocRef);
-      
-      if (orderDoc.exists()) {
-        const orderData = orderDoc.data();
-        console.log("Order data fetched:", orderData);
-        
-        if (orderData.location) {
-          setOrderLocation({
-            latitude: orderData.location.latitude,
-            longitude: orderData.location.longitude
-          });
-        }
-        
-        if (orderData.photoURL) {
-          setPhotoURL(orderData.photoURL);
-        }
-        
-        if (orderData.customer) {
-          setCustomerName(orderData.customer);
-        }
-        
-        if (orderData.items && Array.isArray(orderData.items)) {
-          setOrderItems(orderData.items);
-        }
-        
-        // Set the appropriate app state based on order status
-        if (orderData.confirmed === true) {
-          setAppState('normal');
-        } else if (orderData.accepted === true && orderData.confirmed === false) {
-          setAppState('pending');
-        } else {
-          setAppState('waiting');
-        }
-      } else {
-        console.error("Order document does not exist");
-      }
-    } catch (error) {
-      console.error("Error fetching order details:", error);
-    }
-  };
+    }, (error) => {
+      console.error("Error watching order changes:", error);
+    });
+    
+    return () => unsubscribe();
+  }, [orderId, appState]);
 
   return (
     <IonPage>
       <IonHeader>
-
         <div style={{
           height: '26px',
           width: '100%',
@@ -211,23 +180,19 @@ const Tab1: React.FC = () => {
           top: 0,
           left: 0,
           zIndex: 9999
-          //padding: '5px 5px'
         }}></div>
         <IonToolbar style={{ marginTop: '24px' }}>
           <IonTitle>
             {orderId ? `Order #${orderId.substring(0, 8)}...` : 'No Active Order'}
           </IonTitle>
-
-        
-          <IonTitle>Order #{orderId}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen className="ion-padding">
-        {/* Interface buttons */}
+        {/* Only View Image Button is visible */}
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           marginBottom: '10px'
         }}>
           {/* View Image Button */}
@@ -239,42 +204,6 @@ const Tab1: React.FC = () => {
               disabled={!photoURL}
             >
               View Order Photo
-            </IonButton>
-          </div>
-          
-          {/* Control buttons */}
-          <div>
-            <IonButton 
-              size="default" 
-              color="danger" 
-              onClick={fetchNewOrder}
-              disabled={isLoading}
-            >
-              <IonIcon icon={refresh} slot="start" />
-              Refresh
-            </IonButton>
-            <IonButton 
-              size="small" 
-              onClick={() => updateOrderStatus('normal')}
-              disabled={!orderId || isLoading}
-            >
-              Delivered
-            </IonButton>
-            <IonButton 
-              size="small" 
-              color="warning" 
-              onClick={() => updateOrderStatus('pending')}
-              disabled={!orderId || isLoading}
-            >
-              Delivering
-            </IonButton>
-            <IonButton 
-              size="small" 
-              color="success" 
-              onClick={() => updateOrderStatus('waiting')}
-              disabled={!orderId || isLoading}
-            >
-              Waiting
             </IonButton>
           </div>
         </div>
@@ -361,15 +290,7 @@ const Tab1: React.FC = () => {
               textAlign: 'center'
             }}>
               <h2>No Active Order</h2>
-              <p>Click the Refresh button to get a new order</p>
-              <IonButton 
-                color="primary" 
-                onClick={fetchNewOrder}
-                style={{ marginTop: '20px' }}
-              >
-                <IonIcon icon={refresh} slot="start" />
-                Get New Order
-              </IonButton>
+              <p>Waiting for new orders...</p>
             </div>
           )}
         </div>
