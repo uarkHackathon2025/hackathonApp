@@ -11,15 +11,12 @@ import {
   IonLabel,
   IonItem,
   IonList,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonText
+  IonIcon,
+  IonButton,
 } from '@ionic/react';
 import { useCart } from '../components/CartContent';
 import { restaurants } from './Tab2';
-
+import { add } from 'ionicons/icons';  // Import the plus icon
 export interface FoodItem{
     id: number;
     name: string;
@@ -45,7 +42,17 @@ const RestaurantMenu: React.FC = () => {
   return (
     <IonPage>
         <IonHeader>
-          <IonToolbar>
+        <div style={{
+          height: '26px',
+          width: '100%',
+          backgroundColor: 'black',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 9999
+          //padding: '5px 5px'
+        }}></div>
+        <IonToolbar style={{ marginTop: '24px' }}>
             <IonButtons slot="start">
               <IonBackButton text="Back" />
             </IonButtons>
@@ -88,6 +95,22 @@ const RestaurantMenu: React.FC = () => {
                 <h2>{item.name}</h2>
                 <p>{item.price}</p>
               </IonLabel>
+              {/* Add button with the plus icon */}
+              <IonButton 
+                color='success'
+                slot="end"
+                fill="solid"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent click from triggering the item click
+                  addToCart({
+                    id: item.id,
+                    name: item.name,
+                    price: parseFloat(item.price.replace('$', '')), // still a string
+                  });
+                }}
+              >
+                <IonIcon icon={add} />
+              </IonButton>
             </IonItem>
           ))}
         </IonList>
