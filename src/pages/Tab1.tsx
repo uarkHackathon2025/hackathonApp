@@ -1,12 +1,35 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
+import { app, db } from './firebase'
+import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot, limit } from 'firebase/firestore'
+
+interface OrderData {
+  customer: string;
+  photoURL: string;
+}
 
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
   const [showImage, setShowImage] = useState(false); // State to control image visibility
+  const [latestOrder, setLatestOrder] = useState<OrderData | null>(null);
+
+  useEffect(() => {
+    const fetchLatest = async () => {
+      const ordersRef = collection(db, 'orders');
+      const snapshot = await getDocs(query(ordersRef, limit(1))); // 🥇 get the first document
+
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        const data = doc.data() as OrderData;
+        setLatestOrder(data);
+      }
+    };
+
+    fetchLatest();
+  }, []);
 
   const openImage = () => {
     setShowImage(true); // Show the image when the button is clicked
@@ -66,7 +89,7 @@ const Tab1: React.FC = () => {
               alignItems: 'center',
             }} onClick={closeImage}>
               <img   //below is where you need to paste the image from delivery driver
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbiEJuEpcm7Oa6cP3WyuuF4W_yVJtzybDu2w&s" // Replace this with your image source
+                src={latestOrder.photoURL} // Replace this with your image source
                 alt="Popup"
                 style={{
                   maxWidth: '90%',
