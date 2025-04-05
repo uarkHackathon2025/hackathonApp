@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/react';
 import { useState, useEffect } from 'react';
-import { refresh } from 'ionicons/icons';
+import { refresh, checkmarkCircle } from 'ionicons/icons';
 import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
@@ -50,16 +50,6 @@ const Tab1: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // If there's a current order, delete it from the database first
-      if (orderId) {
-        try {
-          await deleteDoc(doc(db, "orders", orderId));
-          console.log(`Previous order ${orderId} deleted successfully`);
-        } catch (deleteError) {
-          console.error("Error deleting previous order:", deleteError);
-        }
-      }
-      
       // Clear current order data
       clearOrderState();
       
@@ -113,6 +103,28 @@ const Tab1: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching new order:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to handle order received and delete it
+  const handleOrderReceived = async () => {
+    if (!orderId) return;
+    
+    setIsLoading(true);
+    try {
+      // Delete the order from the database
+      await deleteDoc(doc(db, "orders", orderId));
+      console.log(`Order ${orderId} deleted after being received`);
+      
+      // Clear current order data
+      clearOrderState();
+      
+      // Set the app state to waiting
+      setAppState('waiting');
+    } catch (error) {
+      console.error("Error deleting order:", error);
     } finally {
       setIsLoading(false);
     }
@@ -189,10 +201,10 @@ const Tab1: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen className="ion-padding">
-        {/* Only View Image Button is visible */}
+        {/* Top button row */}
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'flex-start',
+          justifyContent: 'space-between',
           marginBottom: '10px'
         }}>
           {/* View Image Button */}
@@ -206,11 +218,27 @@ const Tab1: React.FC = () => {
               View Order Photo
             </IonButton>
           </div>
+          
+          {/* "I got my Order!" button - only visible in normal/delivered state */}
+          {appState === 'normal' && (
+            <div>
+              <IonButton 
+                size="default" 
+                color="primary" 
+                onClick={handleOrderReceived}
+                disabled={isLoading}
+              >
+                <IonIcon icon={checkmarkCircle} slot="start" />
+                I got my Order!
+              </IonButton>
+            </div>
+          )}
         </div>
         
         {/* Order information */}
         {orderId && (
           <div style={{
+            backgroundColor: '#f4f4f4',
             padding: '10px',
             borderRadius: '8px',
             marginBottom: '10px'
@@ -232,8 +260,8 @@ const Tab1: React.FC = () => {
               marginTop: '5px',
               padding: '5px',
               backgroundColor: 
-                appState === 'normal' ? '#28bb50' : 
-                appState === 'pending' ? '#FFA500' : '#69b7f4',
+                appState === 'normal' ? '#d4edff' : 
+                appState === 'pending' ? '#fff3cd' : '#d4f4e6',
               borderRadius: '4px',
               display: 'inline-block'
             }}>
@@ -326,9 +354,38 @@ const Tab1: React.FC = () => {
               textAlign: 'center',
               maxWidth: '90%'
             }}>
-              {/* Show Coordinates */}
-              {/* Order location: {orderLocation?.latitude.toFixed(6)}, {orderLocation?.longitude.toFixed(6)} */}
+              {/* Removed exact coordinates text */}
+              <span>Delivery area</span>
             </div>
+          </div>
+        )}
+
+        {/* Order received confirmation - only visible in normal state */}
+        {appState === 'normal' && (
+          <div style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '0',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '0 20px',
+            zIndex: 100
+          }}>
+            <IonButton 
+              expand="block"
+              size="large"
+              color="primary"
+              onClick={handleOrderReceived}
+              disabled={isLoading}
+              style={{
+                maxWidth: '500px',
+                width: '100%'
+              }}
+            >
+              <IonIcon icon={checkmarkCircle} slot="start" />
+              I got my Order!
+            </IonButton>
           </div>
         )}
       </IonContent>
