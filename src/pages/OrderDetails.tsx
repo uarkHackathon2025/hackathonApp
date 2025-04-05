@@ -170,7 +170,7 @@ import {
               <IonLabel><strong>Delivery Address</strong></IonLabel>
             </IonListHeader>
             <IonItem>
-              <IonLabel>{order.address}</IonLabel>
+              <IonLabel>227 N Harmon Ave, Fayetteville, AR 72701</IonLabel>
             </IonItem>
           </IonList>
   
