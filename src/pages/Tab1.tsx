@@ -1,5 +1,5 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonLabel } from '@ionic/react';
-import { useState, useEffect } from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { useState } from 'react';
 import Map from '../components/Map';
 import PendingScreen from '../components/PendingScreen';
 import WaitingScreen from '../components/WaitingScreen';
@@ -7,14 +7,6 @@ import WaitingScreen from '../components/WaitingScreen';
 const Tab1: React.FC = () => {
   const [appState, setAppState] = useState<'normal' | 'pending' | 'waiting'>('normal');
   const [showImage, setShowImage] = useState(false); // State to control image visibility
-  const [orderLocation, setOrderLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-
-  // Simulate fetching order location after confirmation
-  useEffect(() => {
-    // Simulate fetching confirmed order location (you can replace it with Firebase data)
-    const location = { latitude: 30.2672, longitude: -97.7431 }; // Example location
-    setOrderLocation(location);
-  }, []);
 
   const openImage = () => {
     setShowImage(true); // Show the image when the button is clicked
@@ -33,6 +25,7 @@ const Tab1: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        {/* Container for relative positioning */}
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           
           {/* View Image Button */}
@@ -45,8 +38,8 @@ const Tab1: React.FC = () => {
               View Image
             </IonButton>
           </div>
-
-          {/* Test buttons */}
+          
+          {/* 🧪 Test buttons – easily removable */}
           <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 1000 }}>
             <IonButton size="small" onClick={() => setAppState('normal')}>Normal</IonButton>
             <IonButton size="small" color="warning" onClick={() => setAppState('pending')}>Pending</IonButton>
@@ -54,7 +47,7 @@ const Tab1: React.FC = () => {
           </div>
 
           {/* Main content */}
-          {(appState === 'normal' || appState === 'pending') && <Map orderLocation={orderLocation} />}
+          {(appState === 'normal' || appState === 'pending') && <Map />}
           {appState === 'pending' && <PendingScreen />}
           {appState === 'waiting' && <WaitingScreen />}
 
@@ -72,8 +65,8 @@ const Tab1: React.FC = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }} onClick={closeImage}>
-              <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbiEJuEpcm7Oa6cP3WyuuF4W_yVJtzybDu2w&s" 
+              <img   //below is where you need to paste the image from delivery driver
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbiEJuEpcm7Oa6cP3WyuuF4W_yVJtzybDu2w&s" // Replace this with your image source
                 alt="Popup"
                 style={{
                   maxWidth: '90%',

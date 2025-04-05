@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { useParams } from 'react-router-dom';
+import { usePhotoGallery } from '../hooks/usePhotoGallery';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import Map from '../components/Map'; // Assuming you have a Map component
 
 interface Order {
@@ -11,6 +13,7 @@ interface Order {
   items: string[];
   address: string;
   confirmed?: boolean;
+  photoURL?: string;
   location?: {
     latitude: number;
     longitude: number;
@@ -21,6 +24,7 @@ const OrderDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<Order | null>(null);
   const [orderLocation, setOrderLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const { takePhoto } = usePhotoGallery();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -41,31 +45,63 @@ const OrderDetails: React.FC = () => {
 
   const handleConfirmDelivery = async () => {
     if (order) {
-      // Here, we can simulate taking a photo, as in your original request
+      // Take a picture using the device's camera
+      const photo = await takePhoto();
 
-      // Simulating confirmed flag update
-      const updatedOrder = { ...order, confirmed: true };
+      if (!photo.webPath) {
+        console.error("No photo path available");
+        return;
+      }
 
-      // Update order data with confirmed flag and location in Firebase
-      const orderDocRef = doc(db, "orders", order.id);
-      await setDoc(orderDocRef, {
-        ...updatedOrder,
-        confirmed: true, // Mark the order as confirmed
-      });
+      // Upload the photo to Firebase Storage
+      const storage = getStorage();
+      const response = await fetch(photo.webPath);
+      const blob = await response.blob();
 
-      setOrder(updatedOrder);
+      // Create a unique file name for the photo
+      const fileName = `photo_${new Date().getTime()}.jpeg`;
+      const storageRef = ref(storage, `photos/${fileName}`);
+
+      // Upload the photo to Firebase Storage
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => console.error("Upload failed", error),
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // Get user's geolocation
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const location = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              };
+
+              // Update Firestore with delivery confirmation, photo URL, and geolocation data
+              const orderDocRef = doc(db, "orders", order.id);
+              await setDoc(orderDocRef, {
+                ...order,
+                confirmed: true,
+                photoURL: downloadURL,
+                location: location, // Add the location
+              });
+
+              // Update local state
+              setOrder({ ...order, confirmed: true, photoURL: downloadURL, location });
+
+              console.log("Photo uploaded:", downloadURL);
+              console.log("Location:", location);
+            },
+            (error) => {
+              console.error("Geolocation error:", error);
+            }
+          );
+        }
+      );
     }
   };
-
-  // Replace with your real coordinates (latitude and longitude)
-  const yourCoordinates = { latitude: 30.2672, longitude: -97.7431 }; // Example coordinates for Austin, TX
-  
-  // Set the coordinates on order confirmation if necessary
-  useEffect(() => {
-    if (order && order.confirmed) {
-      setOrderLocation(yourCoordinates); // Update with your actual location
-    }
-  }, [order]);
 
   if (!order) {
     return (
