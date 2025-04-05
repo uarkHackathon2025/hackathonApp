@@ -10,6 +10,7 @@ type CartContextType = {
   cart: CartItem[];
   totalPrice: number;
   addToCart: (item: CartItem) => void;
+  removeFromCart: (item: CartItem, index: number) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -23,8 +24,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTotalPrice(prev => prev + parseFloat(item.price.toString()));
   };
 
+  const removeFromCart = (item: CartItem, index: number) => {
+    setCart((prevCart) => {
+      const newCart = [...prevCart];
+      newCart.splice(index, 1);
+      return newCart;
+    });
+
+    setTotalPrice(prev => prev - parseFloat(item.price.toString()));
+  };
+
   return (
-    <CartContext.Provider value={{ cart, totalPrice, addToCart }}>
+    <CartContext.Provider value={{ cart, totalPrice, addToCart, removeFromCart}}>
       {children}
     </CartContext.Provider>
   );
