@@ -86,7 +86,8 @@ const RestaurantMenu: React.FC = () => {
                 <p>{item.price}</p>
               </IonLabel>
               {/* Add button with the plus icon */}
-              <IonButton
+              <IonButton 
+                color='success'
                 slot="end"
                 fill="solid"
                 onClick={(e) => {
