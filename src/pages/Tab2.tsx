@@ -11,12 +11,16 @@ import {
   IonLabel, 
   IonFab, 
   IonFabButton, 
-  IonIcon
+  IonIcon,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent
 } from '@ionic/react';
 
 import { cartSharp } from 'ionicons/icons';
 import { Link } from 'react-router-dom';  // Import Link for navigation
 import './Tab2.css';
+import React, { useEffect, useState } from 'react'; // Add useState here
+
 
 const HomePage: React.FC = () => {
   const [items, setItems] = useState<{ id: number; name: string; price: number }[]>([]);
@@ -133,41 +137,12 @@ const HomePage: React.FC = () => {
         </IonToolbar>
         <IonTitle color="primary">GeoBites</IonTitle>
       </IonHeader>
-        <ExploreContainer name="Home page" />
-
-      <IonList>
-
-        {filteredItems.map((item, index) => (
-          <IonItem
-            key={item.id}
-            button
-            onClick={() => addToCart(item)}
-          >
-            <IonAvatar slot="start">
-                <img src={'https://picsum.photos/80/80?random=' + index} alt="avatar" />
-            </IonAvatar>
-            <IonLabel>{item.name}</IonLabel>
-
-          </IonItem>
-        ))}
-
-      </IonList>
-
-      {/* Scroll */}
-        <IonInfiniteScroll
-        onIonInfinite={(event) => {
-              generateItems();
-              setTimeout(() => event.target.complete(), 500);
-        }}>
-          <IonInfiniteScrollContent></IonInfiniteScrollContent>
-        </IonInfiniteScroll>
       <IonContent className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 2</IonTitle>
           </IonToolbar>
         </IonHeader>
-
         <IonList>
           {restaurants.map((restaurant) => (
             <Link to={`/tabs/tab2/restaurant/${restaurant.id}`} key={restaurant.id}>
