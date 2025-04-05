@@ -18,6 +18,8 @@ import { useCart } from '../components/CartContent';
 import { FoodItem } from './RestaurantMenu';
 import { trashOutline } from "ionicons/icons";
 
+import { app, db } from './firebase'
+import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
 
 const CartPage: React.FC = () => {
   const { cart, totalPrice, removeFromCart } = useCart();
@@ -25,6 +27,8 @@ const CartPage: React.FC = () => {
   const handleSubmitOrder = () => {
     console.log('Submitting order:', cart);
     // Later: send to backend
+    
+    
   };
 
 
