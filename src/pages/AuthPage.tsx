@@ -38,14 +38,14 @@ const AuthPage: React.FC = () => {
           setShowAlert(true);
         } else {
           //Navigate to homepage. Signup success!
-          history.push('/tabs/tab1');
+          history.push('/tabs/tab2');
         }
 
       } else {
         // Simulate login logic (replace with your actual login logic)
         console.log('Logging in:', email, password);
         if(email === "test@test.com" && password === "password"){ // email exists in database SANTOSH
-          history.push('/tabs/tab1'); //login
+          history.push('/tabs/tab2'); //login
         } else {
           setAlertMessage("Invalid Credentials");
           setShowAlert(true);
