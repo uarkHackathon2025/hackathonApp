@@ -9,15 +9,20 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonButton
+  IonButton,
+  IonBackButton,
+  IonButtons,
+  IonIcon
 } from '@ionic/react';
 import { useCart } from '../components/CartContent';
 import { FoodItem } from './RestaurantMenu';
+import { trashOutline } from "ionicons/icons";
+
 import { app, db } from './firebase'
 import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
 
 const CartPage: React.FC = () => {
-  const { cart, totalPrice } = useCart();
+  const { cart, totalPrice, removeFromCart } = useCart();
 
   const handleSubmitOrder = () => {
     console.log('Submitting order:', cart);
@@ -26,12 +31,16 @@ const CartPage: React.FC = () => {
     
   };
 
+
   return (
 
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Your Cart</IonTitle>
+            <IonButtons slot="start">
+                <IonBackButton text="Back" />
+            </IonButtons>
+          <IonTitle slot="end">Your Cart</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -46,6 +55,14 @@ const CartPage: React.FC = () => {
                     <h2>{item.name}</h2>
                     <p>${item.price.toFixed(2)}</p>
                   </IonLabel>
+                  <IonButton
+                        fill="clear"
+                        color="danger"
+                        slot="end"
+                        onClick={() => removeFromCart(item, index)}
+                    >
+                        <IonIcon icon={trashOutline} />
+                    </IonButton>
                 </IonItem>
               ))}
             </IonList>
