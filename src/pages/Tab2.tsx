@@ -1,19 +1,4 @@
-import { 
-  IonContent, 
-  IonHeader, 
-  IonPage, 
-  IonTitle, 
-  IonToolbar, 
-  IonSearchbar, 
-  IonList, 
-  IonItem,
-  IonAvatar, 
-  IonLabel, 
-  IonFab, 
-  IonFabButton, 
-  IonIcon,
-} from '@ionic/react';
-
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar, IonList, IonItem,IonAvatar, IonLabel, IonFab, IonFabButton, IonIcon} from '@ionic/react';
 import { cartSharp } from 'ionicons/icons';
 import { Link } from 'react-router-dom';  // Import Link for navigation
 import './Tab2.css';
@@ -21,7 +6,7 @@ import React, { useEffect, useState } from 'react'; // Add useState here
 import { useCart } from '../components/CartContent';
 import { useHistory } from 'react-router-dom';
 
-export const restaurants = [
+export const restaurants = [ 
   {
     id: 1,
     name: 'Taco Town',

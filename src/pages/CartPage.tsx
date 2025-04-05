@@ -1,72 +1,75 @@
 // src/pages/CartPage.tsx
-import React from 'react';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonBackButton,
-  IonButtons,
-  IonIcon
-} from '@ionic/react';
+import React, { useState } from 'react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonBackButton, IonButtons, IonIcon, IonInput, IonText, IonAlert} from '@ionic/react';
 import { useCart } from '../components/CartContent';
-import { FoodItem } from './RestaurantMenu';
 import { trashOutline } from "ionicons/icons";
 
-import { app, db } from './firebase'
-import { doc, setDoc, addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore'
+import { db } from './firebase'
+import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 
 const CartPage: React.FC = () => {
   const { cart, totalPrice, removeFromCart } = useCart();
+  const [username, setUsername] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleSubmitOrder = async () => {
+    if (!username.trim()) {
+      setShowAlert(true);
+      return;
+    }
+
     try {
       const orderData = {
         accepted: false,
         confirmed: false,
-        customer: "Doug", // Replace with dynamic user name if needed
-        id: "", // Will update this after adding
+        customer: username,
+        id: "",
         items: cart.map(item => item.name),
-        // createdAt: new Date()
       };
-  
-      // 1. Add the document
+
       const docRef = await addDoc(collection(db, 'orders'), orderData);
-  
-      // 2. Optionally update with the auto-generated ID
+
       await setDoc(docRef, {
         ...orderData,
         id: docRef.id
       });
-  
+
       console.log("Order successfully added with ID:", docRef.id);
-      // Optionally clear cart, show toast, navigate, etc.
-  
+      // Optionally clear cart or navigate
+
     } catch (error) {
       console.error("Error submitting order:", error);
     }
   };
 
-
   return (
-
     <IonPage>
       <IonHeader>
         <IonToolbar>
-            <IonButtons slot="start">
-                <IonBackButton text="Back" />
-            </IonButtons>
+          <IonButtons slot="start">
+            <IonBackButton text="Back" />
+          </IonButtons>
           <IonTitle slot="end">Your Cart</IonTitle>
         </IonToolbar>
       </IonHeader>
+
       <IonContent className="ion-padding">
+
+        {/* Username input field */}
+        <IonItem>
+          <IonLabel position="stacked">Username</IonLabel>
+          <IonInput
+            value={username}
+            placeholder="Enter username"
+            onIonChange={(e) => setUsername(e.detail.value!)}
+          />
+        </IonItem>
+
+
         {cart.length === 0 ? (
-          <IonLabel>No items in cart.</IonLabel>
+          <IonText color="medium">
+            <p>No items in cart.</p>
+          </IonText>
         ) : (
           <>
             <IonList>
@@ -77,13 +80,13 @@ const CartPage: React.FC = () => {
                     <p>${item.price.toFixed(2)}</p>
                   </IonLabel>
                   <IonButton
-                        fill="clear"
-                        color="danger"
-                        slot="end"
-                        onClick={() => removeFromCart(item, index)}
-                    >
-                        <IonIcon icon={trashOutline} />
-                    </IonButton>
+                    fill="clear"
+                    color="danger"
+                    slot="end"
+                    onClick={() => removeFromCart(item, index)}
+                  >
+                    <IonIcon icon={trashOutline} />
+                  </IonButton>
                 </IonItem>
               ))}
             </IonList>
@@ -96,9 +99,17 @@ const CartPage: React.FC = () => {
             </div>
           </>
         )}
+
+        {/* Alert if username not entered */}
+        <IonAlert
+          isOpen={showAlert}
+          onDidDismiss={() => setShowAlert(false)}
+          header="Missing Name"
+          message="Please enter your name before submitting the order."
+          buttons={['OK']}
+        />
       </IonContent>
     </IonPage>
-
   );
 };
 
