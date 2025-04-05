@@ -14,7 +14,7 @@ import {
   IonAlert,
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { CSSTransition } from 'react-transition-group'; //for animations maybe in the future
+//import { CSSTransition } from 'react-transition-group'; //for animations maybe in the future
 import './AuthPage.css'
 
 const AuthPage: React.FC = () => {
@@ -38,14 +38,14 @@ const AuthPage: React.FC = () => {
           setShowAlert(true);
         } else {
           //Navigate to homepage. Signup success!
-          history.push('/folder/inbox');
+          history.push('/tabs/tab1');
         }
 
       } else {
         // Simulate login logic (replace with your actual login logic)
         console.log('Logging in:', email, password);
         if(email === "test@test.com" && password === "password"){ // email exists in database SANTOSH
-          history.push('/folder/inbox'); //login
+          history.push('/tabs/tab1'); //login
         } else {
           setAlertMessage("Invalid Credentials");
           setShowAlert(true);
