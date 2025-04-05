@@ -45,11 +45,11 @@ const HomePage: React.FC = () => {
       name: 'Taco Town',
       icon: 'https://i.imgur.com/bRv3En1.jpeg',
       foodItems: [
-        { id: 1, name: 'Spicy Taco', icon: 'https://example.com/spicy-taco.png', price: '$2.50' },
-        { id: 2, name: 'Beef Taco', icon: 'https://example.com/beef-taco.png', price: '$3.00' },
-        { id: 3, name: 'Chicken Taco', icon: 'https://example.com/chicken-taco.png', price: '$3.25' },
-        { id: 4, name: 'Veggie Taco', icon: 'https://example.com/veggie-taco.png', price: '$2.75' },
-        { id: 5, name: 'Fish Taco', icon: 'https://example.com/fish-taco.png', price: '$3.50' }
+        { id: 1, name: 'Spicy Taco', icon: 'https://monkeyandmekitchenadventures.com/wp-content/uploads/2019/06/Spicy-Moroccan-Tacos_19.jpg', price: '$2.50' },
+        { id: 2, name: 'Beef Taco', icon: 'https://kaynutrition.com/wp-content/uploads/2023/08/shredded-beef-tacos.jpg', price: '$3.00' },
+        { id: 3, name: 'Chicken Taco', icon: 'https://hips.hearstapps.com/hmg-prod/images/chicken-tacos-lead-659443cbe4a7a.jpg?crop=1xw:1xh;center,top&resize=1200:*', price: '$3.25' },
+        { id: 4, name: 'Veggie Taco', icon: 'https://www.connoisseurusveg.com/wp-content/uploads/2025/02/veggie-tacos-7.jpg', price: '$2.75' },
+        { id: 5, name: 'Fish Taco', icon: 'https://www.urbanbakes.com/wp-content/uploads/2019/05/Crunchy-Fish-Tacos-with-Avocado-Lime-Sauce-URBAN-BAKES-7.1.jpg', price: '$3.50' }
       ]
     },
     {
