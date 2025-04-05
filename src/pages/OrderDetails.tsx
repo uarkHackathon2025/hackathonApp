@@ -125,7 +125,17 @@ const OrderDetails: React.FC = () => {
         return (
             <IonPage>
                 <IonHeader>
-                    <IonToolbar>
+                    <div style={{
+                    height: '26px',
+                    width: '100%',
+                    backgroundColor: 'black',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    zIndex: 9999
+                    //padding: '5px 5px'
+                    }}></div>
+                    <IonToolbar style={{ marginTop: '24px' }}>
                         <IonTitle>Order</IonTitle>
                     </IonToolbar>
                 </IonHeader>
@@ -139,7 +149,17 @@ const OrderDetails: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
-                <IonToolbar>
+                <div style={{
+                height: '26px',
+                width: '100%',
+                backgroundColor: 'black',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                zIndex: 9999
+                //padding: '5px 5px'
+                }}></div>
+                <IonToolbar style={{ marginTop: '24px' }}>
                     <IonTitle>Order for {order.customer}</IonTitle>
                 </IonToolbar>
             </IonHeader>

@@ -71,9 +71,9 @@ import CartPage from './pages/CartPage';
 setupIonicReact();
 
 const App: React.FC = () => (
+  
   <CartProvider>
     <IonApp>
-      
       <IonReactRouter>
         
         <IonRouterOutlet>
