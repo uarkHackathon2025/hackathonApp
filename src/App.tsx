@@ -108,6 +108,7 @@ const App: React.FC = () => (
               <Route exact path="/tabs/Driver">
                 <Driver />
               </Route>
+              <Route path="/tabs/tab2/restaurant/:id" component={ItemDetailPage} />
             </IonRouterOutlet>
 
             <IonTabBar slot="bottom">
