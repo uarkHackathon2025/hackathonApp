@@ -1,28 +1,18 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import Map from '../components/Map'; // 👈 Adjust path as needed
-import './Tab1.css';
+import Map from '../components/Map'; // Make sure the path is correct!
 
-const Tab1: React.FC = () => {
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Map Page</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+const Tab1: React.FC = () => (
+  <IonPage>
+    <IonHeader>
+      <IonToolbar>
+        <IonTitle>Map</IonTitle>
+      </IonToolbar>
+    </IonHeader>
 
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
-        {/* 👇 Show the Google Map here instead of ExploreContainer */}
-        <Map />
-      </IonContent>
-    </IonPage>
-  );
-};
+    <IonContent fullscreen>
+      <Map />
+    </IonContent>
+  </IonPage>
+);
 
 export default Tab1;
